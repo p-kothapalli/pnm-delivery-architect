@@ -65,8 +65,3 @@ same command.
 Not yet run: the evaluations themselves (they need a live agent session per
 fixture; see `evaluations/README.md`). The CI workflow file must be added by
 hand.
-
-## Lineage
-
-Structurally modelled on the [LSC Delivery Architect](https://github.com/p-kothapalli/lsc-delivery-architect);
-the package itself has no dependency on it.
