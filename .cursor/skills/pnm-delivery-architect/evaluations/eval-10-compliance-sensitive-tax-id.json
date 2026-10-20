@@ -1,0 +1,20 @@
+{
+  "skills": ["pnm-delivery-architect"],
+  "mode": "New Feature",
+  "fixture": "credentialing-org.md",
+  "scenarios": ["CR-03", "IN-02"],
+  "query": "Write a story: verify malpractice coverage and collect a tax ID that may be an SSN.",
+  "expected_behavior": [
+    "Applies A-4: adds a Compliance & Audit section with verification element, source, how the story satisfies it and the audit evidence produced",
+    "Because D-13 is not supplied, writes '{per D-13}' for any time limit and raises a Clarification Question for the compliance scope",
+    "Applies A-9: classifies a tax ID that may be a personal number as sensitive and states field-level security, masking, encryption options and audit handling",
+    "Notes that the current tax ID storage is unmasked and unencrypted, and that encryption at rest needs a licence the org does not have",
+    "Uses InsurancePolicy labelled [Product] for coverage, with only catalogued fields",
+    "Includes a Pattern C access AC for who may see the full value"
+  ],
+  "must_not": [
+    "Treat every tax ID as non-sensitive",
+    "Assert a named regulation or accreditation clause the target did not supply",
+    "Put the sensitive value in logs, notifications or examples"
+  ]
+}

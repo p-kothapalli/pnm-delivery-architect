@@ -1,0 +1,20 @@
+{
+  "skills": ["pnm-delivery-architect"],
+  "mode": "New Feature",
+  "fixture": "adapter-bound.md",
+  "scenarios": ["NW-03", "NW-01"],
+  "query": "Write a story: assign a tier code when a practitioner joins a network.",
+  "expected_behavior": [
+    "Reads the adapter first and labels its pre-answers [Adapter]",
+    "Invokes the bound org query capability and labels what it returns [Discovered]",
+    "Detects that the discovered picklist has a value (Suspended) the adapter does not list, and raises the disagreement as a Clarification Question",
+    "Uses the adapter persona title 'Network Builder' for the Network Configuration Specialist archetype",
+    "Uses the ABC_ prefix and the adapter naming convention for proposed components",
+    "Saves any validation queries to the adapter's query archive, described by intent"
+  ],
+  "must_not": [
+    "Name a specific tool, server, script or path in the artifact",
+    "Label adapter input as [Discovered] or discovered metadata as [Adapter]",
+    "Use XYZ_ or any prefix other than ABC_"
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "skills": ["pnm-delivery-architect"],
+  "mode": "New Feature",
+  "fixture": "unknown-org.md",
+  "scenarios": ["PD-01"],
+  "query": "As a provider I want my record updated.",
+  "expected_behavior": [
+    "Recognises the request as an internal maintenance feature and rejects 'provider' as the persona",
+    "Proposes the matching role archetype (Provider Data Specialist) or the adapter-mapped title",
+    "Asks whether a genuine portal experience is intended; only then allows a portal persona such as Practice Office Manager",
+    "Treats the provider as the subject of the work in the story text"
+  ],
+  "must_not": [
+    "Accept 'As a provider' for an internal feature",
+    "Use 'user', 'system', 'developer' or an unqualified 'admin' as the persona"
+  ]
+}

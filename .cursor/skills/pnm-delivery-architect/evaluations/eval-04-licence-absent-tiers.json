@@ -1,0 +1,18 @@
+{
+  "skills": ["pnm-delivery-architect"],
+  "mode": "New Feature",
+  "fixture": "licence-absent.md",
+  "scenarios": ["NW-03", "NW-04"],
+  "query": "Write a story: network tiers for a new product.",
+  "expected_behavior": [
+    "Flags ProviderNetworkTier as gated by the PNM add-on, which is not detected",
+    "Offers options: license the add-on and use the product tier object, or a proposed custom tier model, with trade-offs and effort for each",
+    "Raises the licence decision as a Clarification Question with an owner",
+    "If it proceeds with a custom model, labels every new component [Proposed] with the discovered XYZ_ prefix"
+  ],
+  "must_not": [
+    "Write Pattern E against ProviderNetworkTier or ProviderNetworkContract as if they were available",
+    "Treat the missing licence as proof the feature cannot exist in the product",
+    "Silently choose one option without surfacing the decision"
+  ]
+}

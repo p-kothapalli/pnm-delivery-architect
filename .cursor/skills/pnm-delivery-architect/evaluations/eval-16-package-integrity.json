@@ -1,0 +1,23 @@
+{
+  "skills": ["pnm-delivery-architect"],
+  "mode": "Package integrity",
+  "fixture": "none",
+  "scenarios": [],
+  "query": "Run the package validator against the built package, with and without an organisation denylist.",
+  "expected_behavior": [
+    "Zero FAIL findings",
+    "The scenario index holds every scenario ID once across all sixteen lifecycle domains, and every scenario has exactly one card",
+    "Every card carries a Basis line and an exact Evidence line whose codes fit the basis",
+    "Every reference is cited by SKILL.md and every relative link resolves inside the package",
+    "The primer holds twelve blueprints and styles every authorised badge",
+    "Every object the baseline marks verified has a catalog entry",
+    "Evaluations 01 to 16 exist once each with valid JSON, rubric keys and existing fixtures",
+    "The same command succeeds in CI"
+  ],
+  "must_not": [
+    "A coarse basis code as a card's only evidence",
+    "A broken internal link",
+    "A workflow mode named in SKILL.md without a contract",
+    "Any neutrality finding"
+  ]
+}

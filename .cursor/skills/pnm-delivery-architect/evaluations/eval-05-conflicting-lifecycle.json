@@ -1,0 +1,19 @@
+{
+  "skills": ["pnm-delivery-architect"],
+  "mode": "New Feature",
+  "fixture": "conflicting-status.md",
+  "scenarios": ["OB-02"],
+  "query": "Write a story: activate approved practitioners.",
+  "expected_behavior": [
+    "Lists both status mechanisms (the product active flag with effective dates, and the custom status picklist) in the Org Discovery Context",
+    "Describes the conflicting automation (flow vs scheduled job) and the risk of the two disagreeing",
+    "Asks which mechanism governs as a Clarification Question and labels the dependent rows [Assumed — confirm]",
+    "Writes Pattern E and Pattern F so that the choice is visible, or offers one branch per answer",
+    "Uses only the discovered picklist values"
+  ],
+  "must_not": [
+    "Pick one mechanism silently",
+    "Invent a new status value",
+    "Ignore the scheduled job that sets the flag independently"
+  ]
+}

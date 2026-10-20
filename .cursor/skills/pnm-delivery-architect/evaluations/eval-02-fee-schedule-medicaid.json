@@ -1,0 +1,22 @@
+{
+  "skills": ["pnm-delivery-architect"],
+  "mode": "New Feature",
+  "fixture": "product-anchored-greenfield.md",
+  "scenarios": ["CT-01", "CT-02"],
+  "query": "Write a story: facility vs non-facility fee schedule for Medicaid.",
+  "expected_behavior": [
+    "Uses ContractPaymentAgreement and StandardCareFeeAgreement labelled [Product], citing the verified product fields",
+    "Uses the product line-of-business value Medicaid from the discovered picklist",
+    "Pattern E tables list every field written, including Facility Price and Non-Facility Price, parents before children",
+    "Persona is a contracting role archetype such as Contracting Specialist or Reimbursement Analyst",
+    "Org Discovery Context marks the archetype Product-anchored with [Discovered] rows naming the evidence",
+    "Technical Implementation follows the Acceptance Criteria and carries provenance labels",
+    "Validation outcomes state whether they block or warn"
+  ],
+  "must_not": [
+    "Invent custom fields when product fields cover the need",
+    "Use an object marked not verified as [Product]",
+    "Put API names inside Given/When/Then lines",
+    "Write 'etc.' in a Pattern E table"
+  ]
+}

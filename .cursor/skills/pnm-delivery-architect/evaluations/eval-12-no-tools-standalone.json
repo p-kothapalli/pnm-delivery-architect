@@ -1,0 +1,19 @@
+{
+  "skills": ["pnm-delivery-architect"],
+  "mode": "New Feature",
+  "fixture": "no-tools.md",
+  "scenarios": ["PD-01"],
+  "query": "Write a story: update a practitioner's practice phone number and hours.",
+  "expected_behavior": [
+    "States once that no capability is bound and uses the free-text fallback: one grouped, numbered question per phase",
+    "Records the user's free-text answers with the provenance the user states, and everything else as [Assumed — confirm]",
+    "Discloses that product claims come from the package's dated baseline and could not be re-verified",
+    "Produces a complete story using only package content",
+    "Every package reference the skill relies on resolves inside the package"
+  ],
+  "must_not": [
+    "Depend on another skill, a local path or a named tool that is unavailable",
+    "Stop because tools are missing",
+    "Treat a missing tool as evidence that a component does not exist"
+  ]
+}

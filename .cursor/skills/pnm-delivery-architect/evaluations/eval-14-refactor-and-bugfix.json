@@ -1,0 +1,22 @@
+{
+  "skills": ["pnm-delivery-architect"],
+  "mode": "Refactor; Bug Fix",
+  "fixture": "refactor-bugfix.md",
+  "scenarios": ["PD-05"],
+  "query": [
+    "Refactor: make the location creation service safe for the new bulk caller.",
+    "Bug fix: the first location is not marked primary when the user answers Yes."
+  ],
+  "expected_behavior": [
+    "Runs component-scoped discovery only: the component, its callers, D-8 and D-9, and the dimensions it reads or writes",
+    "Refactor: preserves business behaviour, replaces the per-record insert with one bulk write, and states the volume strategy for 500 locations",
+    "Refactor: includes a Current State section and regression ACs proving behaviour is unchanged",
+    "Bug fix: states expected vs actual behaviour, the root cause and a negative-path AC for the first-location case",
+    "Both: regression coverage for the screen flow caller and bulk tests"
+  ],
+  "must_not": [
+    "Run full thirteen-dimension discovery for a component-scoped change",
+    "Silently change business behaviour in the refactor",
+    "Fix the defect inside the refactor story without saying so"
+  ]
+}

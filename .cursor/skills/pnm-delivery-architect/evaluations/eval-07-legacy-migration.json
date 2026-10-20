@@ -1,0 +1,21 @@
+{
+  "skills": ["pnm-delivery-architect"],
+  "mode": "Legacy to PNM Migration",
+  "fixture": "migration-source.md",
+  "scenarios": ["PL-01", "PL-02", "PL-03"],
+  "query": "Migrate our legacy provider system to PNM.",
+  "expected_behavior": [
+    "Enters Migration mode and runs full discovery on both the legacy and target sides",
+    "Defines an identifier strategy covering legacy numbers, NPI gaps and tax IDs, with external identifiers for idempotent loads",
+    "Maps legacy entities to product objects by anchor and gives a dependency-ordered load sequence",
+    "Covers cleansing (missing NPI on part of the population), parity checks, a shadow run, cutover and rollback",
+    "Covers each downstream consumer with a bridge or cutover plan, including the capitation payment process",
+    "Addresses change management and history migration scope",
+    "Decomposes into migration-lane stories, at most ten per epic, each with Pattern E"
+  ],
+  "must_not": [
+    "Skip downstream impact",
+    "Assume history must be migrated in full without asking",
+    "Write a single monolithic story"
+  ]
+}

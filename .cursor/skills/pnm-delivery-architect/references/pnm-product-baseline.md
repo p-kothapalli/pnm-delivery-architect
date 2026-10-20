@@ -56,7 +56,8 @@ Object names are grounded in the PNM and Provider Relationship Management
 data-model pages (S1, S2). **Field-level status** says whether exact fields
 may be used as `[Product]`:
 
-- **Verified** — fields in §3 were read from the object's reference page.
+- **Verified** — fields were read from the object's reference page; they are
+  listed in §3 (S3, S4) or in `references/pnm-object-catalog.md` (S5).
 - **Name only** — the object is documented, but its field page has not yet
   been verified for this package. Name the object; label any field
   `[Assumed — confirm]` until checked against official documentation.
@@ -67,40 +68,42 @@ may be used as `[Product]`:
 | Provider core | Account | Platform standard | — |
 | Provider core | Contact | Platform standard | — |
 | Provider core | AccountContactRelationship | Platform standard | — |
-| Identifiers | HealthcareProviderNpi | Name only | — |
-| Identifiers | IdentityDocument | Name only | — |
-| Locations | HealthcareFacility | Name only | — |
+| Identifiers | HealthcareProviderNpi | Verified (S5) | — |
+| Identifiers | IdentityDocument | Name only — page unavailable (S5) | — |
+| Locations | HealthcareFacility | Name only — page unavailable (S5) | — |
 | Locations | HealthcarePractitionerFacility | Verified (S4) | — |
 | Locations | Location, AssociatedLocation | Platform standard | — |
 | Locations | OperatingHours, TimeSlot | Platform standard | — |
-| Specialty & taxonomy | HealthcareProviderSpecialty | Name only | — |
-| Specialty & taxonomy | HealthcareProviderTaxonomy | Name only | — |
-| Specialty & taxonomy | CareSpecialty, CareTaxonomy, CareSpecialtyTaxonomy | Name only | — |
-| Specialty & taxonomy | CareProviderFacilitySpecialty | Name only | — |
-| Services & conditions | CareService, HealthcareProviderService, HealthcareServiceDetail | Name only | — |
-| Services & conditions | HlthCareProvTreatedCondition (API 59.0+) | Name only | — |
-| Credentials | BusinessLicense | Partial — add-on fields verified (S3) | — |
-| Credentials | BoardCertification | Name only | — |
-| Credentials | PersonEducation | Partial — add-on fields verified (S3) | — |
-| Credentials | PersonEmployment | Name only | PNM add-on |
-| Credentials | CareProviderAdverseAction | Partial — add-on fields verified (S3) | — |
-| Credentials | Accreditation, Award | Name only | — |
-| Networks & participation | HealthcarePayerNetwork | Name only | — |
+| Specialty & taxonomy | HealthcareProviderSpecialty | Verified (S5) | — |
+| Specialty & taxonomy | HealthcareProviderTaxonomy | Verified (S5) | — |
+| Specialty & taxonomy | CareSpecialty, CareTaxonomy, CareSpecialtyTaxonomy | Verified (S5) | — |
+| Specialty & taxonomy | CareProviderFacilitySpecialty | Verified (S5) | — |
+| Services & conditions | CareService, HealthcareProviderService, HealthcareServiceDetail | Verified (S5) | — |
+| Services & conditions | HlthCareProvTreatedCondition (API 59.0+) | Verified (S5) | — |
+| Credentials | BusinessLicense | Verified (S3, S5) | — |
+| Credentials | BoardCertification | Verified (S5) | — |
+| Credentials | PersonEducation | Verified (S3, S5) | — |
+| Credentials | PersonEmployment | Verified (S5) | PNM add-on |
+| Credentials | CareProviderAdverseAction | Verified (S3, S5) | — |
+| Credentials | Accreditation | Verified (S5) | — |
+| Credentials | Award | Name only — page unavailable (S5) | — |
+| Networks & participation | HealthcarePayerNetwork | Verified (S5) | — |
 | Networks & participation | ProviderNetworkTier | Verified (S4) | PNM add-on |
 | Networks & participation | HealthcareFacilityNetwork | Verified (S4) | — |
 | Networks & participation | ProviderNetworkContract | Verified (S4) | PNM add-on |
 | Contracting & reimbursement | Contract | Platform standard; PNM adds limited access (S7) | — |
 | Contracting & reimbursement | ContractPaymentAgreement | Verified (S4) | PNM add-on |
-| Contracting & reimbursement | FeeScheduleDefinition | Name only | PNM add-on |
-| Contracting & reimbursement | CareFeeScheduleItem | Name only | PNM add-on |
+| Contracting & reimbursement | FeeScheduleDefinition | Verified (S5) | PNM add-on |
+| Contracting & reimbursement | CareFeeScheduleItem | Verified (S5) | PNM add-on |
 | Contracting & reimbursement | StandardCareFeeAgreement | Verified (S4) | PNM add-on |
-| Contracting & reimbursement | Categorized, Capitation, Bundled, Percentile-based, Preventive care-fee agreements; SharedSavingPaymentAgreement | Name only | PNM add-on |
-| Application & case | IndividualApplication | Name only | PNM add-on |
-| Application & case | ApplicationCase (junction Case ↔ IndividualApplication) | Name only | PNM add-on |
+| Contracting & reimbursement | CategorizedCareFeeAgreement, CapitationCareFeeAgreement, BundledCareFeeAgreement, SharedSavingPaymentAgreement | Verified (S5) | PNM add-on |
+| Contracting & reimbursement | Percentile-based and preventive care-fee agreements | Name only — page unavailable (S5) | PNM add-on |
+| Application & case | IndividualApplication | Name only — page unavailable (S5) | PNM add-on |
+| Application & case | ApplicationCase (junction Case ↔ IndividualApplication) | Verified (S5) | PNM add-on |
 | Application & case | Case | Platform standard | — |
-| Application & case | CaseRelatedFile (API 62.0+) | Name only | — |
-| Application & case | InsurancePolicy | Name only | PNM add-on |
-| Search | CareProviderSearchableField, CareProviderSearchConfig | Name only | — |
+| Application & case | CaseRelatedFile (API 62.0+) | Verified (S5) | — |
+| Application & case | InsurancePolicy | Verified (S5) | PNM add-on |
+| Search | CareProviderSearchableField, CareProviderSearchConfig | Verified (S5) | — |
 | Search | ProviderSearchSyncLog | Verified (S4) | — |
 
 ---
@@ -108,7 +111,9 @@ may be used as `[Product]`:
 ## 3. Verified field facts
 
 Verified 2026-10-20 against the object reference pages (S4) and the access
-page (S3). Only these fields may appear as `[Product]` without a fresh check.
+page (S3). Fields of the further objects verified against S5 are in
+`references/pnm-object-catalog.md`. Only fields listed here or in the catalog
+may appear as `[Product]` without a fresh check.
 
 ### 3.1 Fields added by the PNM add-on (S3)
 
@@ -233,13 +238,16 @@ accreditation requirement that the target has not placed in scope.
 | S2 | [Provider Relationship Management data model](https://developer.salesforce.com/docs/atlas.en-us.health_cloud_object_reference.meta/health_cloud_object_reference/hc_provider_data_model_overview.htm) | Provider, facility, specialty, credential, network objects | 2026-10-20 |
 | S3 | [Access to PNM](https://developer.salesforce.com/docs/atlas.en-us.health_cloud_object_reference.meta/health_cloud_object_reference/hc_provider_data_model_permissions.htm) | Add-on licence; fields the licence adds | 2026-10-20 |
 | S4 | Object reference pages: [HealthcareProvider](https://developer.salesforce.com/docs/atlas.en-us.health_cloud_object_reference.meta/health_cloud_object_reference/sforce_api_objects_healthcareprovider.htm), [HealthcarePractitionerFacility](https://developer.salesforce.com/docs/atlas.en-us.health_cloud_object_reference.meta/health_cloud_object_reference/sforce_api_objects_healthcarepractitionerfacility.htm), [HealthcareFacilityNetwork](https://developer.salesforce.com/docs/atlas.en-us.life_sciences_dev_guide.meta/life_sciences_dev_guide/sforce_api_objects_healthcarefacilitynetwork.htm), [ProviderNetworkContract](https://developer.salesforce.com/docs/atlas.en-us.health_cloud_object_reference.meta/health_cloud_object_reference/sforce_api_objects_providernetworkcontract.htm), [ProviderNetworkTier](https://developer.salesforce.com/docs/atlas.en-us.health_cloud_object_reference.meta/health_cloud_object_reference/sforce_api_objects_providernetworktier.htm), [ContractPaymentAgreement](https://developer.salesforce.com/docs/atlas.en-us.health_cloud_object_reference.meta/health_cloud_object_reference/sforce_api_objects_contractpaymentagreement.htm), [StandardCareFeeAgreement](https://developer.salesforce.com/docs/atlas.en-us.health_cloud_object_reference.meta/health_cloud_object_reference/sforce_api_objects_standardcarefeeagreement.htm), [ProviderSearchSyncLog](https://developer.salesforce.com/docs/atlas.en-us.health_cloud_object_reference.meta/health_cloud_object_reference/sforce_api_objects_providersearchsynclog.htm) | Field-level facts in §3.2 | 2026-10-20 |
-| S5 | Reference pages for the "Name only" objects in §2 | Field catalog | **Not yet verified** — next release |
+| S5 | Object reference pages for the objects marked "(S5)" in §2 — URL pattern and examples in `references/pnm-object-catalog.md` §11 | Field catalog | 2026-10-20 |
 | S6 | [Trailhead: Provider Network Management](https://trailhead.salesforce.com/content/learn/modules/provider-network-management-with-health-cloud) | Reference lifecycle, personas, work guides | 2026-10-20 |
 | S7 | Salesforce Help and release notes: [Roster File Mapping](https://help.salesforce.com/s/articleView?id=ind.hc_admin_provider_network_management_roster_file_mapping.htm&type=5), [GenAI roster field mapping](https://help.salesforce.com/s/articleView?id=release-notes.rn_health_automate_field_mapping_with_einstein.htm&release=254&type=5), [PNM enhancements](https://help.salesforce.com/s/articleView?id=release-notes.rn_health_pnm_enhancements.htm&release=250&type=5), [PNM contract lifecycle](https://help.salesforce.com/s/articleView?id=release-notes.rn_health_pnm.htm&release=248&type=5), [Experience Cloud user for PNM](https://help.salesforce.com/s/articleView?id=ind.hc_admin_provider_network_management_create_customer_community_user.htm&type=5) | Feature inventory, prerequisites | 2026-10-20 |
 | S8 | [Upsert Provider API](https://developer.salesforce.com/docs/atlas.en-us.life_sciences_dev_guide.meta/life_sciences_dev_guide/hc_upsert_provider_api.htm), [Provider Search criteria input](https://developer.salesforce.com/docs/atlas.en-us.health_cloud_object_reference.meta/health_cloud_object_reference/connect_requests_provider_search_criteria_input_representation.htm) | API options | 2026-10-20 |
 | S9 | [MuleSoft CAQH Connector](https://docs.mulesoft.com/caqh-connector/latest/) | ProView / DirectAssure operations | 2026-10-20 |
 | S10 | [NCQA Credentialing FAQ](https://www.ncqa.org/programs/health-plans/credentialing/faqs/), [NCQA Credentialing eBook 2025](https://wpcdn.ncqa.org/www-prod/NCQA-Credentialing-eBook-2025.pdf) | Verification elements, committee, recredentialing, monitoring, delegation | 2026-10-20 |
 | S11 | [Summer '26 Release in a Box](https://www.salesforce.com/en-us/wp-content/uploads/sites/4/documents/release-notes/summer26-release-in-a-box.pdf) | Payer contact center with Agentforce | 2026-10-20 |
+| S12 | [NPDB Guidebook — Queries](https://npdb.hrsa.gov/guidebook/DOverview.jsp), [Submitting a query](https://npdb.hrsa.gov/guidebook/DSubmittingaQuery.jsp), [Continuous Query](https://www.npdb.hrsa.gov/hcorg/pds.jsp) | Health-plan query eligibility; one-time vs continuous query (12-month enrolment, notice within 24 hours); query history as audit evidence; announced merger of the two query services in December 2026 | 2026-10-20 |
+| S13 | [NPPES NPI Registry API](https://npiregistry.cms.hhs.gov/api-page) | Read-only NPI lookup (version 2.1); NPI-1 / NPI-2; up to 200 results per request; an NPI does not prove licensure or credentialing | 2026-10-20 |
+| S14 | [HHS-OIG Exclusions (LEIE)](https://oig.hhs.gov/exclusions/) | Excluded individuals and entities; online search, CSV download, monthly supplements | 2026-10-20 |
 
 Re-verify every row once per Salesforce release; a row older than 180 days is
 flagged by the validator.

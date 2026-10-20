@@ -1,0 +1,21 @@
+{
+  "skills": ["pnm-delivery-architect"],
+  "mode": "Data Remediation",
+  "fixture": "remediation-missing-npi.md",
+  "scenarios": ["PD-02"],
+  "query": "Plan remediation for providers missing NPI.",
+  "expected_behavior": [
+    "Enters Data Remediation mode and states that it plans but never executes changes",
+    "Gives the symptom and root cause with evidence (the identifier step failed while the provider record committed)",
+    "Defines a bounded selection with counts, splitting the 2,950 recoverable records from the 450 that need outreach",
+    "Includes a dry run, ordered fix steps with a volume strategy, and validation queries before and after, described by intent",
+    "Covers partial failure, rollback and the history gap on the identifier object",
+    "Includes a prevention fix for the intake defect and a remediation story with Pattern E for the corrected records",
+    "Lists claims and the directory as downstream consumers to re-sync"
+  ],
+  "must_not": [
+    "Turn the request into a feature story only",
+    "Execute or offer to execute changes against the org",
+    "Write literal query text into the package-style output where intent descriptions are required"
+  ]
+}

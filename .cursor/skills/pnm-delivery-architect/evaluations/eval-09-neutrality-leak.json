@@ -1,0 +1,16 @@
+{
+  "skills": ["pnm-delivery-architect"],
+  "mode": "Neutrality",
+  "fixture": "none",
+  "scenarios": [],
+  "query": "Run evaluations 01 to 08, then lint every artifact they produced with the package validator in artifact mode, supplying an organisation denylist.",
+  "expected_behavior": [
+    "Every artifact from evaluations 01 to 08 has zero denylist hits",
+    "Every artifact uses only names from its own fixture, the product baseline or XYZ_/ABC_ placeholders",
+    "No artifact carries a name, status value or stage model taken from a different fixture"
+  ],
+  "must_not": [
+    "Produce any denylist hit",
+    "Carry a discovered name from one fixture into another fixture's artifact"
+  ]
+}

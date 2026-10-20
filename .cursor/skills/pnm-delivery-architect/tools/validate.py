@@ -139,9 +139,90 @@ def check_package(skill_dir: pathlib.Path, rule_file: pathlib.Path | None, rep: 
     check_scenarios(refs_dir / "pnm-scenario-library.md", skill_dir, rep, facts)
     check_patterns(refs_dir / "ac-pattern-library.md", rep, facts)
     check_badges(skill_dir, rep, facts)
+    check_primer(refs_dir / "slds2-pnm-primer.md", rep, facts)
+    check_catalog(refs_dir, rep, facts)
+    check_evaluations(skill_dir / "evaluations", rep, facts)
     check_rule_file(rule_file, rep)
     check_dates(skill_dir, rep, facts)
     return facts
+
+
+EXPECTED_BLUEPRINTS = 12
+EXPECTED_EVALS = 16
+EVAL_KEYS = ("skills", "mode", "fixture", "query", "expected_behavior", "must_not")
+
+
+def check_primer(primer: pathlib.Path, rep: Report, facts: dict) -> None:
+    if not primer.is_file():
+        rep.add(WARN, "P10", "SLDS 2 primer not shipped — prototypes record 'primer: pending'")
+        return
+    text = read(primer)
+    blueprints = re.findall(r"^###\s+B(\d{1,2})\s+·", text, re.M)
+    facts["blueprint_count"] = len(blueprints)
+    if len(set(blueprints)) != EXPECTED_BLUEPRINTS:
+        rep.add(FAIL, "P10", f"{len(set(blueprints))} PNM blueprints in the primer; {EXPECTED_BLUEPRINTS} expected",
+                primer.name)
+    for hook in ("pnm-build-banner", "pnm-legend", "pnm-badge"):
+        if f".{hook}" not in text:
+            rep.add(FAIL, "P10", f"primer defines no style for .{hook}", primer.name)
+    if re.search(r"font-size:\s*\d+px", text):
+        rep.add(FAIL, "P10", "primer uses a hard-coded pixel font size", primer.name)
+    if len(set(blueprints)) == EXPECTED_BLUEPRINTS:
+        rep.ok("P10", f"primer: {EXPECTED_BLUEPRINTS} blueprints, banner, legend and badge styles present")
+
+
+def check_catalog(refs_dir: pathlib.Path, rep: Report, facts: dict) -> None:
+    cat, base = refs_dir / "pnm-object-catalog.md", refs_dir / "pnm-product-baseline.md"
+    if not cat.is_file():
+        rep.add(WARN, "P11", "object catalog not shipped")
+        return
+    objects = set(re.findall(r"^###\s+([A-Z][A-Za-z]+)\s*$", read(cat), re.M))
+    facts["catalog_objects"] = len(objects)
+    if base.is_file():
+        rows = [r for r in read(base).splitlines() if re.match(r"^\|[^|]+\|[^|]+\|\s*Verified \([^)]*S5", r)]
+        for r in rows:
+            for name in re.findall(r"\b([A-Z][a-z]+[A-Z][A-Za-z]+)\b", r.split("|")[2].split("(")[0]):
+                if name not in objects:
+                    rep.add(FAIL, "P11", f"baseline marks {name} verified (S5) but the catalog has no entry", base.name)
+    rep.ok("P11", f"object catalog: {len(objects)} object entries")
+
+
+def check_evaluations(ev_dir: pathlib.Path, rep: Report, facts: dict) -> None:
+    if not ev_dir.is_dir():
+        rep.add(WARN, "P12", "no evaluations folder")
+        return
+    files = sorted(ev_dir.glob("eval-*.json"))
+    numbers: list[int] = []
+    for f in files:
+        m = re.match(r"eval-(\d{2})-", f.name)
+        if not m:
+            rep.add(FAIL, "P12", "evaluation file name must be eval-NN-<slug>.json", f.name)
+            continue
+        numbers.append(int(m.group(1)))
+        try:
+            data = json.loads(read(f))
+        except json.JSONDecodeError as e:
+            rep.add(FAIL, "P12", f"invalid JSON: {e}", f.name)
+            continue
+        for key in EVAL_KEYS:
+            if key not in data:
+                rep.add(FAIL, "P12", f"missing key '{key}'", f.name)
+        if data.get("skills") != ["pnm-delivery-architect"]:
+            rep.add(FAIL, "P12", "skills must be [\"pnm-delivery-architect\"]", f.name)
+        for key in ("expected_behavior", "must_not"):
+            if key in data and (not isinstance(data[key], list) or not data[key]):
+                rep.add(FAIL, "P12", f"'{key}' must be a non-empty list", f.name)
+        fixture = data.get("fixture")
+        if fixture and fixture != "none" and not (ev_dir / "fixtures" / fixture).is_file():
+            rep.add(FAIL, "P12", f"fixture not found: fixtures/{fixture}", f.name)
+    facts["evaluation_count"] = len(files)
+    wanted = set(range(1, EXPECTED_EVALS + 1))
+    if set(numbers) != wanted or len(numbers) != len(set(numbers)):
+        missing = sorted(wanted - set(numbers))
+        rep.add(FAIL, "P12", f"evaluations must be numbered 01–{EXPECTED_EVALS} once each"
+                             + (f" (missing: {', '.join(f'{n:02d}' for n in missing)})" if missing else ""))
+    else:
+        rep.ok("P12", f"{EXPECTED_EVALS} evaluations, all with fixtures and rubric keys")
 
 
 def check_scenarios(lib: pathlib.Path, skill_dir: pathlib.Path, rep: Report, facts: dict) -> None:
@@ -173,20 +254,40 @@ def check_scenarios(lib: pathlib.Path, skill_dir: pathlib.Path, rep: Report, fac
     if not dupes:
         rep.ok("P04", f"scenario index: {len(ids)} unique IDs across {len(domains)} domains")
 
-    # Cards: each must carry exact evidence, not only a basis code.
-    cards = list(re.finditer(r"^###\s+([A-Z]{2}-\d{2})\s+·", text, re.M))
-    facts["card_count"] = len(cards)
-    for i, cm in enumerate(cards):
-        end = cards[i + 1].start() if i + 1 < len(cards) else len(text)
-        block = text[cm.start():end]
-        ev = re.search(r"^\*\*Evidence:\*\*\s*(.+)$", block, re.M)
-        if not ev or not re.search(r"\bS\d{1,2}\b|\bCS-\d\b|§|clause|page", ev.group(1)):
-            rep.add(FAIL, "P04", f"card {cm.group(1)} has no exact evidence reference", lib.name)
-        if cm.group(1) not in ids:
-            rep.add(FAIL, "P04", f"card {cm.group(1)} is not in the index", lib.name)
-    if len(cards) < len(ids):
-        rep.add(WARN, "P04", f"{len(cards)} of {len(ids)} scenario cards authored — release gate requires all",
-                lib.name)
+    # Cards live in the library and in references/scenario-cards-*.md. Each carries
+    # exact evidence, not only a basis code, and the evidence must fit the basis.
+    card_files = [lib, *sorted(lib.parent.glob("scenario-cards-*.md"))]
+    seen: list[str] = []
+    for cf in card_files:
+        ctext = read(cf)
+        cards = list(re.finditer(r"^###\s+([A-Z]{2}-\d{2})\s+·", ctext, re.M))
+        for i, cm in enumerate(cards):
+            cid = cm.group(1)
+            seen.append(cid)
+            block = ctext[cm.start(): cards[i + 1].start() if i + 1 < len(cards) else len(ctext)]
+            ev = re.search(r"^\*\*Evidence:\*\*\s*(.+)$", block, re.M)
+            basis = re.search(r"^\*\*Basis:\*\*\s*(.+)$", block, re.M)
+            if not ev or not re.search(r"\bS\d{1,2}\b|\bCS-\d\b|§|clause|page", ev.group(1)):
+                rep.add(FAIL, "P04", f"card {cid} has no exact evidence reference", cf.name)
+            elif basis:
+                codes = set(re.findall(r"\b([PRF])\b", basis.group(1)))
+                if "F" in codes and not re.search(r"\bCS-\d\b", ev.group(1)):
+                    rep.add(FAIL, "P04", f"card {cid} has Basis F but no CS evidence code", cf.name)
+                if codes & {"P", "R"} and not re.search(r"\bS\d{1,2}\b", ev.group(1)):
+                    rep.add(FAIL, "P04", f"card {cid} has Basis P/R but no S source", cf.name)
+            if not basis:
+                rep.add(FAIL, "P04", f"card {cid} has no Basis line", cf.name)
+            if cid not in ids:
+                rep.add(FAIL, "P04", f"card {cid} is not in the index", cf.name)
+    facts["card_count"] = len(seen)
+    for d in sorted({c for c in seen if seen.count(c) > 1}):
+        rep.add(FAIL, "P04", f"scenario {d} has more than one card")
+    missing_cards = [i for i in ids if i not in seen]
+    if missing_cards:
+        rep.add(WARN, "P04", f"{len(set(seen))} of {len(ids)} scenario cards authored — release gate requires all "
+                             f"(missing: {', '.join(missing_cards[:8])}{'…' if len(missing_cards) > 8 else ''})")
+    elif ids:
+        rep.ok("P04", f"all {len(ids)} scenarios have a card with exact evidence across {len(card_files)} file(s)")
 
 
 def check_patterns(acs: pathlib.Path, rep: Report, facts: dict) -> None:
@@ -322,7 +423,8 @@ IMPL_IN_AC = [
     (r"\bIntegration Procedure\b|\bDataRaptor\b|\bData Mapper\b", "OmniStudio component"),
     (r"\[(?:Product|Discovered|Adapter|Proposed|Assumed — confirm)\]", "provenance label"),
 ]
-A4_TRIGGER = re.compile(r"credential|committee|delegat|sanction|monitoring|terminat", re.I)
+# "credentialed" describes a precondition (a credentialed practitioner), not credentialing scope.
+A4_TRIGGER = re.compile(r"credential(?!ed\b)|committee|delegat|sanction|monitoring|terminat", re.I)
 
 
 def section_index(text: str, title: str) -> int:

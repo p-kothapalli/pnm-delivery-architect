@@ -1,0 +1,21 @@
+{
+  "skills": ["pnm-delivery-architect"],
+  "mode": "New Feature",
+  "fixture": "custom-xyz.md",
+  "scenarios": ["PD-05", "TR-01"],
+  "query": "Write a story: terminate a practice location effective next month.",
+  "expected_behavior": [
+    "Records archetype Custom-anchored and uses only the discovered XYZ_ objects and fields, labelled [Discovered]",
+    "Uses only the discovered status values Active, Pending Termination and Terminated",
+    "Includes a Pattern F lifecycle table covering the location, each participation row at that location and the provider anchor",
+    "Includes Pattern E tables for every record updated, with end-date and status rules (A-2, A-3)",
+    "Adds an edge-case AC for terminating the last active location",
+    "Includes a Compliance & Audit section because the scope involves termination, sourcing any notice window to D-13 or a placeholder",
+    "Notes that the product location and participation objects exist but are unused, and does not write to them"
+  ],
+  "must_not": [
+    "Emit HealthcarePractitionerFacility or HealthcareFacilityNetwork fields as write targets",
+    "Use any prefix other than XYZ_ for discovered components",
+    "Invent a status value or notice period"
+  ]
+}

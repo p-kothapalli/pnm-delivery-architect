@@ -4,11 +4,17 @@ Generalised PNM scenarios across the provider lifecycle. Use them in STEP 1 to
 select scope, carry edge cases into acceptance criteria, and decide which Org
 Discovery dimensions must be resolved.
 
-> **Status (v1.0):** this release ships the **index** — 92 scenarios across 16
-> domains with product objects and basis codes. Full scenario cards with exact
-> evidence references ship in the next release. Until a card exists, use the
-> index row plus the card questions in §Card format to drive discovery and
-> clarifying questions; do not treat an index row as a design.
+Every scenario has a card with exact evidence:
+
+- **Core domains** (deep cards with a Pattern E seed): Intake & application,
+  Credentialing, Network participation, Provider data maintenance,
+  Recredentialing & ongoing monitoring, Roster & bulk intake —
+  `references/scenario-cards-core.md`.
+- **Other domains** (compact cards): `references/scenario-cards-extended.md`.
+
+Read the index first, then load only the cards for the domains in scope. A
+card is a starting point for discovery and acceptance criteria — never a
+design.
 
 ## Rules
 
@@ -25,7 +31,20 @@ Discovery dimensions must be resolved.
 regulatory standard · **F** = field pattern observed in at least one
 implementation and generalised. Basis codes never name an organisation.
 
-## Card format (next release)
+## Evidence codes
+
+| Code | Meaning |
+|---|---|
+| S1–S14 | Official sources in the register, `references/pnm-product-baseline.md` §6 |
+| CS-1 | Field pattern from a public payer case study (replacement of a legacy provider mainframe: guided build, network hierarchy, data-domain queues, licence strategy, migration practice) |
+| CS-2 | Field pattern from private implementation research (a heavily customised PNM: staged credentialing, review loops, bulk intake, activation, termination variants) |
+
+CS codes say a pattern **exists in the field**. They never supply names,
+status values, stage models or defaults; the mapping from code to source is
+held outside this package. A card with Basis **F** carries at least one CS
+code; a card with Basis **P** or **R** carries at least one S code.
+
+## Card format
 
 ```
 ### <ID> · <Name>
@@ -217,7 +236,8 @@ implementation and generalised. Basis codes never name an organisation.
 
 **Coverage:** 16 domains, 92 scenarios.
 
-## Core domains (deepest cards in the next release)
+## Core domains
 
 Intake & application · Credentialing · Network participation · Provider data
 maintenance · Recredentialing & ongoing monitoring · Roster & bulk intake.
+Their deep cards are in `references/scenario-cards-core.md`.

@@ -1,0 +1,23 @@
+{
+  "skills": ["pnm-delivery-architect"],
+  "mode": "Plan + Prototype",
+  "fixture": "unknown-org.md",
+  "scenarios": ["NW-01", "NW-02", "NW-03"],
+  "query": "Plan and prototype a network participation wizard.",
+  "expected_behavior": [
+    "Enters Plan + Prototype mode and produces a Solution Plan and a single-file HTML prototype, with no Given/When/Then and no Pattern E",
+    "States once that no capability is bound and asks grouped, numbered free-text discovery questions covering at least D-1, D-4, D-5, D-8, D-10 and D-11",
+    "Records archetype Unknown and labels every unresolved dimension [Assumed — confirm], each with a matching Clarification Question",
+    "Uses product objects (HealthcareFacilityNetwork, HealthcarePractitionerFacility, HealthcarePayerNetwork) labelled [Product] or [Assumed — confirm], never as discovered facts",
+    "Prototype carries the SLDS 2 :root token block, a build-technology banner, a component legend and a badge on every interactive or data-bearing element",
+    "Prototype self-check comment records 'passed: X / 10' honestly",
+    "Shows status values as '{status per D-5}' placeholders",
+    "Includes an Estimated Effort table marked AI-estimated"
+  ],
+  "must_not": [
+    "Pick an archetype, prefix, status model or stage sequence by default",
+    "Present any assumed fact as [Discovered]",
+    "Use a hard-coded pixel font size in the prototype",
+    "Leave any custom element without a provenance label"
+  ]
+}
