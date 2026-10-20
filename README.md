@@ -12,6 +12,11 @@ artifacts, on demand and independently:
    Given/When/Then, Pattern E record specifications, Technical
    Implementation, Compliance & Audit, effort.
 
+**New here? Start with the guide:
+[p-kothapalli.github.io/pnm-delivery-architect](https://p-kothapalli.github.io/pnm-delivery-architect/index.html)**
+— why the skill exists, how it works, a worked example with a clickable
+prototype, install steps, and copyable prompts for every workflow mode.
+
 ## Client-neutral by design
 
 The skill carries Salesforce product knowledge and generalised PNM scenarios.
