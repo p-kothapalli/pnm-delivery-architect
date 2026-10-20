@@ -1,0 +1,290 @@
+<!--
+  PNM prototype self-check (slds2-pnm-primer §10)
+  passed: 10 / 10
+  primer: v1.1
+  notes:  illustrative example for the guide site; scenarios NW-01, NW-02, NW-08 (story-examples §1)
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Network participation — PNM Prototype</title>
+<style>
+  :root {
+    /* Surface (85 %) */
+    --slds-g-color-surface-1: #ffffff;
+    --slds-g-color-surface-2: #f3f3f3;
+    --slds-g-color-surface-3: #e5e5e5;
+    --slds-g-color-surface-container-1: #ffffff;
+    --slds-g-color-surface-container-2: #f3f3f3;
+    --slds-g-color-on-surface-1: #747474;
+    --slds-g-color-on-surface-2: #181818;
+    --slds-g-color-on-surface-3: #080707;
+    /* Accent (5 %) */
+    --slds-g-color-accent-1: #0176d3;
+    --slds-g-color-accent-2: #014486;
+    --slds-g-color-accent-container-1: #0176d3;
+    --slds-g-color-on-accent-1: #ffffff;
+    /* Feedback */
+    --slds-g-color-success-1: #2e844a;
+    --slds-g-color-on-success-1: #ffffff;
+    --slds-g-color-warning-1: #fe9339;
+    --slds-g-color-on-warning-1: #080707;
+    --slds-g-color-error-1: #ba0517;
+    --slds-g-color-on-error-1: #ffffff;
+    /* Border */
+    --slds-g-color-border-1: #c9c9c9;
+    --slds-g-color-border-2: #aeaeae;
+    /* Spacing (4-point grid) */
+    --slds-g-spacing-1: 0.25rem;
+    --slds-g-spacing-2: 0.5rem;
+    --slds-g-spacing-3: 0.75rem;
+    --slds-g-spacing-4: 1rem;
+    --slds-g-spacing-5: 1.5rem;
+    --slds-g-spacing-6: 2rem;
+    --slds-g-spacing-8: 3rem;
+    /* Typography */
+    --slds-g-font-family-base: "Salesforce Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --slds-g-font-size-base: 0.8125rem;
+    --slds-g-font-scale-neg-2: 0.6875rem;
+    --slds-g-font-scale-neg-1: 0.75rem;
+    --slds-g-font-scale-1: 0.875rem;
+    --slds-g-font-scale-2: 1rem;
+    --slds-g-font-scale-4: 1.25rem;
+    --slds-g-font-scale-6: 1.75rem;
+    --slds-g-font-weight-4: 400;
+    --slds-g-font-weight-5: 500;
+    --slds-g-font-weight-7: 700;
+    /* Radius, shadow, motion */
+    --slds-g-radius-border-1: 0.125rem;
+    --slds-g-radius-border-2: 0.25rem;
+    --slds-g-radius-border-3: 0.5rem;
+    --slds-g-radius-border-circle: 50%;
+    --slds-g-shadow-1: 0 2px 4px rgba(0, 0, 0, 0.08);
+    --slds-g-shadow-2: 0 2px 8px rgba(0, 0, 0, 0.16);
+    --slds-g-duration-1: 150ms;
+    /* PNM overlay tones (§8) */
+    --pnm-tone-ootb: #2e844a;
+    --pnm-tone-config: #0176d3;
+    --pnm-tone-flow: #7f5cff;
+    --pnm-tone-os: #b8256b;
+    --pnm-tone-fc: #9b2fae;
+    --pnm-tone-ip: #3c5b8b;
+    --pnm-tone-dm: #06787a;
+    --pnm-tone-lwc: #b95500;
+    --pnm-tone-apex: #ba0517;
+    --pnm-tone-dpe: #8c4b02;
+    --pnm-tone-agentforce: #5a1ba9;
+    --pnm-tone-ext: #514f4d;
+  }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: var(--slds-g-font-family-base);
+    font-size: var(--slds-g-font-size-base);
+    color: var(--slds-g-color-on-surface-2);
+    background: var(--slds-g-color-surface-2);
+    line-height: 1.4;
+  }
+.slds-grid { display: flex; flex-wrap: nowrap; }
+.slds-wrap { flex-wrap: wrap; }
+.slds-grid_vertical { display: flex; flex-direction: column; }
+.slds-col { flex: 1 1 auto; min-width: 0; }
+.slds-gutters > .slds-col { padding-left: var(--slds-g-spacing-3); padding-right: var(--slds-g-spacing-3); }
+.slds-grid_align-spread { justify-content: space-between; }
+.slds-grid_align-end { justify-content: flex-end; }
+.slds-grid_vertical-align-center { align-items: center; }
+.slds-size_1-of-1 { width: 100%; }
+.slds-size_1-of-2 { width: 50%; }
+.slds-size_1-of-3 { width: 33.333%; }
+.slds-size_2-of-3 { width: 66.666%; }
+.slds-size_1-of-4 { width: 25%; }
+.slds-m-bottom_small { margin-bottom: var(--slds-g-spacing-3); }
+.slds-m-bottom_medium { margin-bottom: var(--slds-g-spacing-4); }
+.slds-m-top_medium { margin-top: var(--slds-g-spacing-4); }
+.slds-m-right_x-small { margin-right: var(--slds-g-spacing-2); }
+.slds-m-left_small { margin-left: var(--slds-g-spacing-3); }
+.slds-p-around_small { padding: var(--slds-g-spacing-3); }
+.slds-p-around_medium { padding: var(--slds-g-spacing-4); }
+.slds-p-horizontal_medium { padding-left: var(--slds-g-spacing-4); padding-right: var(--slds-g-spacing-4); }
+.slds-text-heading_small { font-size: var(--slds-g-font-scale-2); font-weight: var(--slds-g-font-weight-5); color: var(--slds-g-color-on-surface-3); }
+.slds-text-heading_medium { font-size: var(--slds-g-font-scale-4); font-weight: var(--slds-g-font-weight-5); color: var(--slds-g-color-on-surface-3); }
+.slds-text-body_small { font-size: var(--slds-g-font-scale-neg-1); color: var(--slds-g-color-on-surface-1); }
+.slds-text-title { font-size: var(--slds-g-font-scale-neg-1); text-transform: uppercase; letter-spacing: 0.04em; color: var(--slds-g-color-on-surface-1); font-weight: var(--slds-g-font-weight-7); }
+.slds-text-color_weak { color: var(--slds-g-color-on-surface-1); }
+.slds-truncate { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.slds-assistive-text { position: absolute !important; margin: -1px !important; border: 0 !important; padding: 0 !important; width: 1px !important; height: 1px !important; overflow: hidden !important; clip: rect(0 0 0 0) !important; }
+.slds-hide { display: none !important; }
+.slds-global-header { background: var(--slds-g-color-on-surface-3); color: var(--slds-g-color-on-accent-1);
+  padding: var(--slds-g-spacing-2) var(--slds-g-spacing-4); display: flex; justify-content: space-between; align-items: center; }
+.slds-button { display: inline-flex; align-items: center; justify-content: center; gap: var(--slds-g-spacing-1);
+  border: 1px solid transparent; border-radius: var(--slds-g-radius-border-2); padding: 0 var(--slds-g-spacing-3);
+  min-height: 2rem; font-family: inherit; font-size: var(--slds-g-font-scale-1); font-weight: var(--slds-g-font-weight-5);
+  cursor: pointer; transition: background var(--slds-g-duration-1); }
+.slds-button_brand { background: var(--slds-g-color-accent-1); color: var(--slds-g-color-on-accent-1); }
+.slds-button_brand:hover { background: var(--slds-g-color-accent-2); }
+.slds-button_neutral { background: var(--slds-g-color-surface-1); color: var(--slds-g-color-accent-1); border-color: var(--slds-g-color-border-2); }
+.slds-button_destructive { background: var(--slds-g-color-error-1); color: var(--slds-g-color-on-error-1); }
+.slds-card { background: var(--slds-g-color-surface-container-1); border: 1px solid var(--slds-g-color-border-1);
+  border-radius: var(--slds-g-radius-border-2); box-shadow: var(--slds-g-shadow-1); margin-bottom: var(--slds-g-spacing-4); position: relative; }
+.slds-card__header { padding: var(--slds-g-spacing-3) var(--slds-g-spacing-4); display: flex; align-items: center; justify-content: space-between; }
+.slds-card__body { padding: 0 var(--slds-g-spacing-4) var(--slds-g-spacing-4); }
+.slds-card__footer { padding: var(--slds-g-spacing-3) var(--slds-g-spacing-4); border-top: 1px solid var(--slds-g-color-border-1); text-align: center; }
+.slds-page-header { background: var(--slds-g-color-surface-1); padding: var(--slds-g-spacing-4); border-bottom: 1px solid var(--slds-g-color-border-1); }
+.slds-page-header__row { display: flex; align-items: center; justify-content: space-between; gap: var(--slds-g-spacing-4); }
+.slds-path__nav { display: flex; list-style: none; margin: 0; padding: 0; gap: var(--slds-g-spacing-1); }
+.slds-path__item { flex: 1 1 0; text-align: center; padding: var(--slds-g-spacing-2); background: var(--slds-g-color-surface-3);
+  border-radius: var(--slds-g-radius-border-1); font-size: var(--slds-g-font-scale-neg-1); }
+.slds-path__item.slds-is-complete { background: var(--slds-g-color-success-1); color: var(--slds-g-color-on-success-1); }
+.slds-path__item.slds-is-current { background: var(--slds-g-color-accent-1); color: var(--slds-g-color-on-accent-1); font-weight: var(--slds-g-font-weight-5); }
+.slds-tabs_default__nav { display: flex; list-style: none; margin: 0; padding: 0; border-bottom: 1px solid var(--slds-g-color-border-1); }
+.slds-tabs_default__item { margin-right: var(--slds-g-spacing-4); padding: var(--slds-g-spacing-3) 0; color: var(--slds-g-color-on-surface-1); border-bottom: 2px solid transparent; }
+.slds-tabs_default__item.slds-is-active { color: var(--slds-g-color-accent-1); border-bottom-color: var(--slds-g-color-accent-1); font-weight: var(--slds-g-font-weight-5); }
+.slds-table { width: 100%; border-collapse: collapse; background: var(--slds-g-color-surface-1); font-size: var(--slds-g-font-scale-1); }
+.slds-table th, .slds-table td { text-align: left; padding: var(--slds-g-spacing-2) var(--slds-g-spacing-3); border-bottom: 1px solid var(--slds-g-color-border-1); }
+.slds-table thead th { background: var(--slds-g-color-surface-2); color: var(--slds-g-color-on-surface-1); font-weight: var(--slds-g-font-weight-7);
+  text-transform: uppercase; letter-spacing: 0.04em; font-size: var(--slds-g-font-scale-neg-1); }
+.slds-form-element { margin-bottom: var(--slds-g-spacing-3); }
+.slds-form-element__label { display: block; font-size: var(--slds-g-font-scale-neg-1); color: var(--slds-g-color-on-surface-1); margin-bottom: var(--slds-g-spacing-1); }
+.slds-input, .slds-select, .slds-textarea { width: 100%; box-sizing: border-box; padding: var(--slds-g-spacing-2) var(--slds-g-spacing-3);
+  font: inherit; font-size: var(--slds-g-font-scale-1); color: var(--slds-g-color-on-surface-2); background: var(--slds-g-color-surface-1);
+  border: 1px solid var(--slds-g-color-border-2); border-radius: var(--slds-g-radius-border-2); }
+.slds-input:focus, .slds-select:focus { outline: 2px solid var(--slds-g-color-accent-1); outline-offset: 1px; }
+.slds-notify_alert { padding: var(--slds-g-spacing-3) var(--slds-g-spacing-4); border-radius: var(--slds-g-radius-border-2); font-size: var(--slds-g-font-scale-1); margin-bottom: var(--slds-g-spacing-3); }
+.slds-theme_success { background: var(--slds-g-color-success-1); color: var(--slds-g-color-on-success-1); }
+.slds-theme_warning { background: var(--slds-g-color-warning-1); color: var(--slds-g-color-on-warning-1); }
+.slds-theme_error { background: var(--slds-g-color-error-1); color: var(--slds-g-color-on-error-1); }
+.slds-progress_vertical { list-style: none; margin: 0; padding: 0; }
+.slds-progress__item { padding: var(--slds-g-spacing-2) var(--slds-g-spacing-3); border-left: 3px solid var(--slds-g-color-border-1); color: var(--slds-g-color-on-surface-1); }
+.slds-progress__item.slds-is-completed { border-left-color: var(--slds-g-color-success-1); color: var(--slds-g-color-on-surface-2); }
+.slds-progress__item.slds-is-active { border-left-color: var(--slds-g-color-accent-1); color: var(--slds-g-color-accent-1); font-weight: var(--slds-g-font-weight-5); }
+.slds-badge { display: inline-block; padding: 0 var(--slds-g-spacing-2); border-radius: var(--slds-g-radius-border-3);
+  background: var(--slds-g-color-surface-3); color: var(--slds-g-color-on-surface-2); font-size: var(--slds-g-font-scale-neg-1); }
+.slds-modal { position: fixed; inset: 4rem 0 0 0; z-index: 9002; display: flex; justify-content: center; }
+.slds-modal__container { background: var(--slds-g-color-surface-1); border-radius: var(--slds-g-radius-border-3); box-shadow: var(--slds-g-shadow-2);
+  width: min(45rem, calc(100vw - 4rem)); max-height: calc(100vh - 8rem); display: flex; flex-direction: column; overflow: hidden; }
+.slds-backdrop { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5); z-index: 9001; }
+.pnm-badge { display: inline-flex; align-items: center; margin-left: var(--slds-g-spacing-2); padding: 0 var(--slds-g-spacing-1);
+  font-size: var(--slds-g-font-scale-neg-2); font-weight: var(--slds-g-font-weight-7); letter-spacing: 0.04em; text-transform: uppercase;
+  border: 1px solid currentColor; border-radius: var(--slds-g-radius-border-1); background: var(--slds-g-color-surface-1); vertical-align: middle; }
+.pnm-badge.ootb       { color: var(--pnm-tone-ootb); }
+.pnm-badge.config     { color: var(--pnm-tone-config); }
+.pnm-badge.flow       { color: var(--pnm-tone-flow); }
+.pnm-badge.os         { color: var(--pnm-tone-os); }
+.pnm-badge.fc         { color: var(--pnm-tone-fc); }
+.pnm-badge.ip         { color: var(--pnm-tone-ip); }
+.pnm-badge.dm         { color: var(--pnm-tone-dm); }
+.pnm-badge.lwc        { color: var(--pnm-tone-lwc); }
+.pnm-badge.apex       { color: var(--pnm-tone-apex); }
+.pnm-badge.dpe        { color: var(--pnm-tone-dpe); }
+.pnm-badge.agentforce { color: var(--pnm-tone-agentforce); }
+.pnm-badge.ext        { color: var(--pnm-tone-ext); }
+.pnm-prov { margin-left: var(--slds-g-spacing-1); font-size: var(--slds-g-font-scale-neg-2); color: var(--slds-g-color-on-surface-1); font-style: italic; }
+.pnm-build-banner { background: var(--slds-g-color-accent-container-1); color: var(--slds-g-color-on-accent-1);
+  padding: var(--slds-g-spacing-3) var(--slds-g-spacing-5); font-size: var(--slds-g-font-scale-1); }
+.pnm-build-banner strong { font-weight: var(--slds-g-font-weight-7); }
+.pnm-legend { display: flex; flex-wrap: wrap; gap: var(--slds-g-spacing-2); align-items: center; background: var(--slds-g-color-surface-1);
+  padding: var(--slds-g-spacing-2) var(--slds-g-spacing-5); border-bottom: 1px solid var(--slds-g-color-border-1); font-size: var(--slds-g-font-scale-neg-1); }
+.pnm-legend .pnm-badge { margin-left: 0; }
+.slds-button_brand .pnm-prov { color: var(--slds-g-color-on-accent-1); }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="icon-provider" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="currentColor"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7" fill="currentColor"/></symbol>
+  <symbol id="icon-network" viewBox="0 0 24 24"><circle cx="5" cy="12" r="3" fill="currentColor"/><circle cx="19" cy="5" r="3" fill="currentColor"/><circle cx="19" cy="19" r="3" fill="currentColor"/><path d="M7.5 11l9-5M7.5 13l9 5" stroke="currentColor" stroke-width="2"/></symbol>
+  <symbol id="icon-sync" viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 14-5l2-2v6h-6l2-2a5 5 0 0 0-9 3z M20 12a8 8 0 0 1-14 5l-2 2v-6h6l-2 2a5 5 0 0 0 9-3z" fill="currentColor"/></symbol>
+  <symbol id="icon-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="currentColor"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6" fill="currentColor"/></symbol>
+</svg>
+
+<div class="pnm-build-banner">
+  <strong>Build technology · Mixed</strong> — OOTB practitioner record page + Config directory-display field + LWC participation grid and stepper + Apex participation service.
+  Rejected: record-by-record Flow for multi-network saves (several base and child rows per save — volume rule). Example data is fictitious; icons are simplified placeholders.
+</div>
+<div class="pnm-legend" aria-label="Component legend">
+  <span class="pnm-badge ootb">OOTB</span> shipped
+  <span class="pnm-badge config">Config</span> configuration
+  <span class="pnm-badge lwc">LWC</span> custom component
+  <span class="pnm-badge apex">Apex</span> custom service
+  <span class="pnm-badge ext">Ext</span> downstream consumer
+  <span class="pnm-prov">[Proposed]</span> new in this design
+</div>
+
+<div class="slds-global-header">
+  <span>Provider Network Management <span class="pnm-badge ootb">OOTB</span></span>
+  <span><svg width="16" height="16" aria-hidden="true"><use href="#icon-user"/></svg><span class="slds-assistive-text">Running persona:</span> Network Configuration Specialist</span>
+</div>
+
+<header class="slds-page-header">
+  <div class="slds-page-header__row">
+    <div>
+      <p class="slds-text-title"><svg width="14" height="14" aria-hidden="true"><use href="#icon-provider"/></svg><span class="slds-assistive-text">Practitioner</span> Practitioner <span class="pnm-badge ootb">OOTB</span></p>
+      <h1 class="slds-text-heading_medium">Dr. Jordan Example, MD</h1>
+      <p class="slds-text-body_small">NPI 1234567893 · Family Medicine · Main St Clinic · <span class="slds-badge">{status per D-5}</span></p>
+    </div>
+    <div><button class="slds-button slds-button_neutral">Cancel <span class="pnm-badge lwc">LWC</span><span class="pnm-prov">[Proposed]</span></button></div>
+  </div>
+</header>
+
+<div class="slds-grid slds-p-around_medium">
+  <div class="slds-col slds-size_1-of-4">
+    <ol class="slds-progress slds-progress_vertical" aria-label="Participation steps">
+      <li class="slds-progress__item slds-is-completed">Practitioner and location</li>
+      <li class="slds-progress__item slds-is-active">Base and child networks</li>
+      <li class="slds-progress__item">Tier and panel</li>
+      <li class="slds-progress__item">Directory display</li>
+      <li class="slds-progress__item">Review and save</li>
+    </ol>
+    <span class="pnm-badge lwc">LWC · stepper</span><span class="pnm-prov">[Proposed]</span>
+  </div>
+
+  <div class="slds-col slds-p-horizontal_medium">
+    <div class="slds-notify slds-notify_alert slds-theme_warning" role="alert">Warning: the practitioner's time at Main St Clinic ends 31 Dec 2027, so participation will end with the location. You can save (warns).</div>
+
+    <article class="slds-card">
+      <div class="slds-card__header">
+        <h2 class="slds-text-heading_small"><svg width="16" height="16" aria-hidden="true"><use href="#icon-network"/></svg><span class="slds-assistive-text">Networks</span> Network participation <span class="pnm-badge lwc">LWC · grid</span><span class="pnm-prov">[Proposed]</span></h2>
+        <button class="slds-button slds-button_neutral">Add network <span class="pnm-badge lwc">LWC</span><span class="pnm-prov">[Proposed]</span></button>
+      </div>
+      <div class="slds-card__body">
+        <table class="slds-table" aria-label="Network participation rows">
+          <thead><tr><th>Network</th><th>Parent network</th><th>Tier</th><th>Location</th><th>Effective from</th><th>Effective to</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>Commercial PPO</td><td>—</td><td>Tier 1</td><td>Main St Clinic</td><td>01 Dec 2026</td><td>31 Dec 2027</td><td>{status per D-5}</td></tr>
+            <tr><td>Narrow PPO</td><td>Commercial PPO</td><td>—</td><td>Main St Clinic</td><td>01 Dec 2026</td><td>31 Dec 2027</td><td>{status per D-5}</td></tr>
+            <tr><td>Exclusive PPO</td><td>Commercial PPO</td><td>—</td><td>Main St Clinic</td><td>01 Dec 2026</td><td>31 Dec 2027</td><td>{status per D-5}</td></tr>
+          </tbody>
+        </table>
+        <p class="slds-text-body_small slds-m-top_medium">Child-network rows inherit the location and dates of their base network. Rows are written to the product participation object <span class="pnm-badge ootb">OOTB</span>.</p>
+      </div>
+    </article>
+
+    <article class="slds-card">
+      <div class="slds-card__header"><h2 class="slds-text-heading_small">Directory display <span class="pnm-badge config">Config</span><span class="pnm-prov">[Proposed]</span></h2></div>
+      <div class="slds-card__body">
+        <p><span class="slds-badge">Hidden until 01 Dec 2026</span> — participation starts in the future, so the directory shows it from the effective date. <span class="pnm-badge config">Config · field</span><span class="pnm-prov">[Proposed]</span></p>
+        <p class="slds-text-body_small">Rule: shown when this is the practitioner's primary location and participation is in effect today; hidden until the effective date when it starts in the future; otherwise hidden.</p>
+      </div>
+    </article>
+
+    <article class="slds-card">
+      <div class="slds-card__header"><h2 class="slds-text-heading_small"><svg width="16" height="16" aria-hidden="true"><use href="#icon-sync"/></svg><span class="slds-assistive-text">Sync</span> Downstream consumers <span class="pnm-badge ext">Ext</span></h2></div>
+      <div class="slds-card__body">
+        <table class="slds-table" aria-label="Downstream consumers">
+          <thead><tr><th>Consumer</th><th>Receives</th><th>When</th></tr></thead>
+          <tbody>
+            <tr><td>{directory consumer per D-12}</td><td>Network, location, display flag</td><td>After save</td></tr>
+            <tr><td>{claims consumer per D-12}</td><td>Network, tier, effective dates</td><td>{timing per D-12}</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </article>
+
+    <div class="slds-grid slds-grid_align-end">
+      <button class="slds-button slds-button_neutral slds-m-right_x-small">Back <span class="pnm-badge lwc">LWC</span><span class="pnm-prov">[Proposed]</span></button>
+      <button class="slds-button slds-button_brand">Save participation <span class="pnm-badge apex">Apex · bulk</span><span class="pnm-prov">[Proposed]</span></button>
+    </div>
+  </div>
+</div>
+</body>
+</html>
