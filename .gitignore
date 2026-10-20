@@ -1,0 +1,10 @@
+.DS_Store
+*.log
+.idea/
+.vscode/
+node_modules/
+__pycache__/
+# Workspace adapters, overlays and denylists are never part of the package.
+*adapter*.local.md
+*overlay*.local.md
+denylist*.txt

@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "description": "Built-in, portable leak rules for the PNM Delivery Architect package. Contains no organisation names; organisation-specific terms are supplied at run time through an optional external denylist.",
+  "rules": [
+    {
+      "id": "N01",
+      "level": "FAIL",
+      "label": "custom API name",
+      "pattern": "\\b[A-Za-z][A-Za-z0-9_]*__(?:c|mdt|e|x|r|b|kav)\\b",
+      "why": "Custom suffixes identify one organisation's metadata. Use a placeholder such as <Prefix>_<Field>__c."
+    },
+    {
+      "id": "N02",
+      "level": "FAIL",
+      "label": "custom prefix",
+      "pattern": "\\b[A-Z]{2,6}_[A-Z][A-Za-z0-9]{2,}",
+      "why": "Upper-case prefixes followed by a component name usually belong to one organisation's naming convention."
+    },
+    {
+      "id": "N03",
+      "level": "FAIL",
+      "label": "absolute or workspace path",
+      "pattern": "(?:/Users/|/home/|[A-Za-z]:\\\\|~/|\\bforce-app/|\\brequirements/)",
+      "why": "Paths belong in a workspace adapter, not in the portable package."
+    },
+    {
+      "id": "N04",
+      "level": "FAIL",
+      "label": "named tool or server identifier",
+      "pattern": "(?:\\bproject-\\d+-|\\bmcp__|\\bplugin-[a-z0-9-]+\\b|\\bAskQuestion\\b|\\bcode-review-graph\\b|\\bsalesforce-docs\\b|\\b[a-z_]+\\.py\\b|\\b[a-z_]+\\.sh\\b)",
+      "why": "The package refers to capabilities; tool bindings belong in a workspace adapter."
+    },
+    {
+      "id": "N05",
+      "level": "FAIL",
+      "label": "parent-skill dependency",
+      "pattern": "(?:lsc-delivery-architect|user-story-architect|\\bparent skill\\b)",
+      "why": "The package must be standalone."
+    }
+  ],
+  "allow": [
+    "^XYZ_",
+    "^ABC_"
+  ],
+  "allowNote": "XYZ_ and ABC_ are reserved as deliberately arbitrary prefixes for evaluation fixtures and illustrative examples."
+}

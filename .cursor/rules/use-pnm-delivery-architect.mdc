@@ -1,0 +1,47 @@
+---
+description: Use the PNM Delivery Architect skill for Provider Network Management solution plans, prototypes, user stories and epics
+alwaysApply: true
+---
+
+# Use the PNM Delivery Architect for Provider Network Management work
+
+Whenever the request is to **create, write, draft, plan, refactor, break down,
+migrate, remediate or prototype** a solution plan, user story, requirement,
+build spec, technical specification, epic or product-owner mockup for
+**Salesforce Health Cloud Provider Network Management (PNM)**, first read and
+follow `.cursor/skills/pnm-delivery-architect/SKILL.md` and author the output
+using its contract.
+
+## Triggers (non-exhaustive)
+
+- "write/draft a story", "acceptance criteria", "epic", "break this down",
+  "build spec", "implementation plan"
+- "plan and prototype", "plan only", "solution plan", "prototype first",
+  "no stories yet", "clickable prototype", "PO mockup"
+- "migrate our legacy provider system", "data fix", "remediate", "backfill"
+- PNM vocabulary: credentialing, recredentialing, primary source verification,
+  CAQH, NPDB, participation request, network participation, roster, provider
+  data maintenance, provider directory, provider search, fee schedule, payment
+  agreement, delegated credentialing, ancillary or organisational provider,
+  termination, reinstatement
+
+## Non-negotiables (hard blockers)
+
+- **Discover before naming** — run Org Discovery; no default organisation,
+  prefix, status model or stage sequence.
+- **Provenance** — every technical name labelled `[Product]`, `[Discovered]`,
+  `[Adapter]`, `[Proposed]` or `[Assumed — confirm]` outside the ACs.
+- **Concrete business persona** — a role archetype or adapter-mapped title;
+  never "user", "system", or "provider" for an internal feature.
+- **Given / When / Then in business language**, and a **Pattern E** record
+  specification for every write (skipped only in Plan + Prototype mode).
+- **Technical Implementation after the ACs**; **Compliance & Audit** for
+  credentialing, committee, monitoring, delegation and termination work.
+- **Neutrality** — nothing from another organisation leaks into the artifact.
+
+## Workspace adapter
+
+If this workspace has a PNM Delivery Architect adapter, read it after the
+skill; it binds tools, output locations, naming and overlays. Without one, the
+skill asks once for an output location and proceeds with whatever
+capabilities are available, stating any that are not.
