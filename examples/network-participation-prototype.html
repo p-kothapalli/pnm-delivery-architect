@@ -1,8 +1,15 @@
 <!--
   PNM prototype self-check (slds2-pnm-primer §10)
-  passed: 10 / 10
+  passed: 9 / 10
   primer: v1.1
   notes:  illustrative example for the guide site; scenarios NW-01, NW-02, NW-08 (story-examples §1)
+  failed: point 7 (matches approved scope) — adding a base network and its child networks in one
+          step is not built; it is raised as Clarification Q1 instead of an unproven custom screen.
+  fidelity:
+    structure: product objects and fields verified against a Health Cloud org describe
+    visuals:   composition modelled on a reference Lightning console screen (screenshot level);
+               fonts, tokens and focus styles not verified against a live org
+    workflow:  standard record page, related list, View All and New modal
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -12,279 +19,824 @@
 <title>Network participation — PNM Prototype</title>
 <style>
   :root {
-    /* Surface (85 %) */
     --slds-g-color-surface-1: #ffffff;
     --slds-g-color-surface-2: #f3f3f3;
     --slds-g-color-surface-3: #e5e5e5;
-    --slds-g-color-surface-container-1: #ffffff;
-    --slds-g-color-surface-container-2: #f3f3f3;
     --slds-g-color-on-surface-1: #747474;
-    --slds-g-color-on-surface-2: #181818;
-    --slds-g-color-on-surface-3: #080707;
-    /* Accent (5 %) */
+    --slds-g-color-on-surface-2: #2e2e2e;
+    --slds-g-color-on-surface-3: #181818;
     --slds-g-color-accent-1: #0176d3;
     --slds-g-color-accent-2: #014486;
-    --slds-g-color-accent-container-1: #0176d3;
+    --slds-g-color-accent-3: #0b5cab;
+    --slds-g-color-accent-container-1: #014486;
     --slds-g-color-on-accent-1: #ffffff;
-    /* Feedback */
     --slds-g-color-success-1: #2e844a;
-    --slds-g-color-on-success-1: #ffffff;
-    --slds-g-color-warning-1: #fe9339;
-    --slds-g-color-on-warning-1: #080707;
     --slds-g-color-error-1: #ba0517;
-    --slds-g-color-on-error-1: #ffffff;
-    /* Border */
     --slds-g-color-border-1: #c9c9c9;
-    --slds-g-color-border-2: #aeaeae;
-    /* Spacing (4-point grid) */
+    --slds-g-color-border-2: #e5e5e5;
+    --slds-g-color-border-3: #d8d8d8;
     --slds-g-spacing-1: 0.25rem;
     --slds-g-spacing-2: 0.5rem;
     --slds-g-spacing-3: 0.75rem;
     --slds-g-spacing-4: 1rem;
     --slds-g-spacing-5: 1.5rem;
-    --slds-g-spacing-6: 2rem;
-    --slds-g-spacing-8: 3rem;
-    /* Typography */
-    --slds-g-font-family-base: "Salesforce Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --slds-g-font-family-base: "Salesforce Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     --slds-g-font-size-base: 0.8125rem;
     --slds-g-font-scale-neg-2: 0.6875rem;
     --slds-g-font-scale-neg-1: 0.75rem;
     --slds-g-font-scale-1: 0.875rem;
     --slds-g-font-scale-2: 1rem;
+    --slds-g-font-scale-3: 1.125rem;
     --slds-g-font-scale-4: 1.25rem;
-    --slds-g-font-scale-6: 1.75rem;
     --slds-g-font-weight-4: 400;
     --slds-g-font-weight-5: 500;
     --slds-g-font-weight-7: 700;
-    /* Radius, shadow, motion */
     --slds-g-radius-border-1: 0.125rem;
     --slds-g-radius-border-2: 0.25rem;
-    --slds-g-radius-border-3: 0.5rem;
-    --slds-g-radius-border-circle: 50%;
-    --slds-g-shadow-1: 0 2px 4px rgba(0, 0, 0, 0.08);
+    --slds-g-radius-border-4: 1rem;
+    --slds-g-shadow-1: 0 2px 2px rgba(0, 0, 0, 0.1);
     --slds-g-shadow-2: 0 2px 8px rgba(0, 0, 0, 0.16);
-    --slds-g-duration-1: 150ms;
-    /* PNM overlay tones (§8) */
     --pnm-tone-ootb: #2e844a;
     --pnm-tone-config: #0176d3;
     --pnm-tone-flow: #7f5cff;
-    --pnm-tone-os: #b8256b;
-    --pnm-tone-fc: #9b2fae;
-    --pnm-tone-ip: #3c5b8b;
-    --pnm-tone-dm: #06787a;
-    --pnm-tone-lwc: #b95500;
-    --pnm-tone-apex: #ba0517;
-    --pnm-tone-dpe: #8c4b02;
-    --pnm-tone-agentforce: #5a1ba9;
     --pnm-tone-ext: #514f4d;
+    --pnm-row-height: 2rem;
   }
+  * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
-  body {
-    font-family: var(--slds-g-font-family-base);
-    font-size: var(--slds-g-font-size-base);
-    color: var(--slds-g-color-on-surface-2);
-    background: var(--slds-g-color-surface-2);
-    line-height: 1.4;
+  body { font-family: var(--slds-g-font-family-base); font-size: var(--slds-g-font-size-base); color: var(--slds-g-color-on-surface-3);
+    background: var(--slds-g-color-surface-1); line-height: 1.5; }
+  button { font: inherit; }
+  a { color: var(--slds-g-color-accent-3); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  :focus-visible { outline: 2px solid var(--slds-g-color-accent-1); outline-offset: 2px; }
+  .slds-assistive-text { position: absolute !important; margin: -1px !important; border: 0 !important; padding: 0 !important;
+    width: 1px !important; height: 1px !important; overflow: hidden !important; clip: rect(0 0 0 0) !important; }
+  .slds-truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .icon { width: 1rem; height: 1rem; flex: none; fill: currentColor; }
+  .icon-sm { width: 0.75rem; height: 0.75rem; }
+
+  /* Prototype strip — outside the Salesforce frame */
+  .pnm-build-banner { display: flex; align-items: center; gap: var(--slds-g-spacing-3); flex-wrap: wrap;
+    background: var(--slds-g-color-accent-container-1); color: var(--slds-g-color-on-accent-1);
+    padding: var(--slds-g-spacing-1) var(--slds-g-spacing-4); font-size: var(--slds-g-font-scale-neg-1); }
+  .pnm-build-banner strong { font-weight: var(--slds-g-font-weight-7); }
+  .pnm-build-banner .pnm-detail { display: none; }
+  body.review-on .pnm-build-banner .pnm-detail { display: inline; }
+  .pnm-toggle { margin-left: auto; background: transparent; color: var(--slds-g-color-on-accent-1); border: 1px solid var(--slds-g-color-on-accent-1);
+    border-radius: var(--slds-g-radius-border-4); padding: 0 var(--slds-g-spacing-3); cursor: pointer; font-size: var(--slds-g-font-scale-neg-1); }
+  .pnm-legend { display: none; flex-wrap: wrap; gap: var(--slds-g-spacing-2); align-items: center; background: var(--slds-g-color-surface-1);
+    padding: var(--slds-g-spacing-2) var(--slds-g-spacing-4); border-bottom: 1px solid var(--slds-g-color-border-1); font-size: var(--slds-g-font-scale-neg-1); }
+  body.review-on .pnm-legend { display: flex; }
+  .pnm-badge { display: inline-flex; align-items: center; margin-left: var(--slds-g-spacing-1); padding: 0 var(--slds-g-spacing-1);
+    font-size: var(--slds-g-font-scale-neg-2); font-weight: var(--slds-g-font-weight-7); letter-spacing: 0.04em; text-transform: uppercase; line-height: 1.4;
+    border: 1px solid currentColor; border-radius: var(--slds-g-radius-border-1); background: var(--slds-g-color-surface-1); vertical-align: middle; white-space: nowrap; }
+  .pnm-legend .pnm-badge { margin-left: 0; }
+  .pnm-badge.ootb { color: var(--pnm-tone-ootb); }
+  .pnm-badge.config { color: var(--pnm-tone-config); }
+  .pnm-badge.flow { color: var(--pnm-tone-flow); }
+  .pnm-badge.ext { color: var(--pnm-tone-ext); }
+  .pnm-prov { margin-left: var(--slds-g-spacing-1); font-size: var(--slds-g-font-scale-neg-2); color: var(--slds-g-color-on-surface-2); font-style: italic; }
+  body:not(.review-on) .pnm-annot { display: none; }
+  body.review-on [data-region] { outline: 1px dashed var(--pnm-tone-config); outline-offset: -1px; }
+
+  /* Global header */
+  .sf-header { display: flex; align-items: center; gap: var(--slds-g-spacing-4); height: 3.125rem; padding: 0 var(--slds-g-spacing-4);
+    background: var(--slds-g-color-surface-1); border-bottom: 1px solid var(--slds-g-color-border-3); }
+  .sf-logo { width: 3.25rem; height: 2.25rem; flex: none; }
+  .sf-search { flex: 1 1 auto; display: flex; justify-content: center; min-width: 0; }
+  .sf-search label { display: flex; align-items: center; gap: var(--slds-g-spacing-2); width: 100%; max-width: 38rem; height: 2rem;
+    padding: 0 var(--slds-g-spacing-3); border: 1px solid var(--slds-g-color-border-1); border-radius: var(--slds-g-radius-border-2);
+    color: var(--slds-g-color-on-surface-1); background: var(--slds-g-color-surface-1); }
+  .sf-search input { border: 0; outline: 0; font: inherit; width: 100%; min-width: 0; background: transparent; color: var(--slds-g-color-on-surface-3); }
+  .sf-utilities { display: flex; align-items: center; gap: var(--slds-g-spacing-2); flex: none; }
+  .sf-utility { width: 2rem; height: 2rem; display: inline-flex; align-items: center; justify-content: center; border: 0; background: transparent;
+    color: var(--slds-g-color-on-surface-1); border-radius: var(--slds-g-radius-border-2); cursor: pointer; }
+  .sf-utility:hover { background: var(--slds-g-color-surface-2); }
+  .sf-avatar { width: 2rem; height: 2rem; border-radius: 50%; background: var(--slds-g-color-accent-2); color: var(--slds-g-color-on-accent-1);
+    display: inline-flex; align-items: center; justify-content: center; font-size: var(--slds-g-font-scale-neg-1); font-weight: var(--slds-g-font-weight-7); }
+
+  /* Console navigation */
+  .sf-nav { display: flex; align-items: stretch; height: 2.5rem; background: var(--slds-g-color-surface-1);
+    border-bottom: 3px solid var(--slds-g-color-accent-1); }
+  .sf-launcher { display: flex; align-items: center; gap: var(--slds-g-spacing-3); padding: 0 var(--slds-g-spacing-4); flex: none;
+    border-right: 1px solid var(--slds-g-color-border-2); }
+  .sf-launcher button { border: 0; background: transparent; padding: 0; color: var(--slds-g-color-on-surface-1); display: inline-flex; cursor: pointer; }
+  .sf-appname { font-size: var(--slds-g-font-scale-3); white-space: nowrap; }
+  .sf-worktabs { display: flex; min-width: 0; overflow: hidden; }
+  .sf-worktab { display: flex; align-items: center; gap: var(--slds-g-spacing-2); width: 13rem; padding: 0 var(--slds-g-spacing-3);
+    border-right: 1px solid var(--slds-g-color-border-2); color: var(--slds-g-color-on-surface-2); background: var(--slds-g-color-surface-1);
+    border-top: 3px solid transparent; }
+  .sf-worktab.is-active { border-top-color: var(--slds-g-color-accent-1); background: var(--slds-g-color-surface-1); color: var(--slds-g-color-on-surface-3); }
+  .sf-worktab .label { flex: 1; min-width: 0; }
+  .sf-tabctl { width: 1.25rem; height: 1.25rem; border: 0; background: transparent; padding: 0; color: var(--slds-g-color-on-surface-1);
+    display: inline-flex; align-items: center; justify-content: center; border-radius: var(--slds-g-radius-border-2); cursor: pointer; }
+  .sf-tabctl:hover { background: var(--slds-g-color-surface-2); }
+  .sf-more { margin-left: auto; display: flex; align-items: center; gap: var(--slds-g-spacing-1); padding: 0 var(--slds-g-spacing-4); flex: none;
+    border: 0; border-left: 1px solid var(--slds-g-color-border-2); background: transparent; color: var(--slds-g-color-on-surface-2); cursor: pointer; }
+  .sf-subtabs { display: flex; height: 1.75rem; background: var(--slds-g-color-surface-1); border-bottom: 1px solid var(--slds-g-color-border-3); }
+  .sf-subtab { display: flex; align-items: center; gap: var(--slds-g-spacing-1); width: 12rem; padding: 0 var(--slds-g-spacing-2) 0 0;
+    border-right: 1px solid var(--slds-g-color-border-2); font-size: var(--slds-g-font-scale-neg-1); color: var(--slds-g-color-on-surface-2); }
+  .sf-subtab.is-active { background: #eef4ff; box-shadow: inset 0 2px 0 var(--slds-g-color-accent-1); color: var(--slds-g-color-on-surface-3); }
+  .sf-subtab__label { flex: 1; min-width: 0; height: 100%; display: flex; align-items: center; gap: var(--slds-g-spacing-2);
+    padding: 0 var(--slds-g-spacing-1) 0 var(--slds-g-spacing-3); border: 0; background: transparent; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+  .sf-subtab .label { flex: 1; min-width: 0; }
+
+  /* Workspace */
+  .sf-workspace { min-height: calc(100vh - 9rem); padding: var(--slds-g-spacing-3);
+    background: linear-gradient(180deg, #e8f1fc 0, #cfdcee 100%); }
+  .sf-card { background: var(--slds-g-color-surface-1); border: 1px solid var(--slds-g-color-border-1); border-radius: var(--slds-g-radius-border-2);
+    box-shadow: var(--slds-g-shadow-1); }
+  .sf-objicon { width: 2rem; height: 2rem; border-radius: var(--slds-g-radius-border-2); display: inline-flex; align-items: center; justify-content: center;
+    color: #ffffff; flex: none; }
+  .sf-objicon .icon { width: 1.25rem; height: 1.25rem; }
+  .sf-objicon.facility { background: #3c97dd; }
+  .sf-objicon.network { background: #06a59a; }
+  .sf-objicon.sm { width: 1.25rem; height: 1.25rem; border-radius: var(--slds-g-radius-border-1); }
+  .sf-objicon.sm .icon { width: 0.875rem; height: 0.875rem; }
+
+  /* Highlights panel */
+  .sf-highlights { padding: var(--slds-g-spacing-3) var(--slds-g-spacing-4); margin-bottom: var(--slds-g-spacing-3); }
+  .sf-highlights__top { display: flex; align-items: center; gap: var(--slds-g-spacing-3); }
+  .sf-highlights__title { flex: 1; min-width: 0; }
+  .sf-highlights__obj { font-size: var(--slds-g-font-scale-neg-1); color: var(--slds-g-color-on-surface-2); }
+  .sf-highlights h1 { margin: 0; font-size: var(--slds-g-font-scale-3); font-weight: var(--slds-g-font-weight-7); }
+  .sf-highlights__fields { display: flex; flex-wrap: wrap; gap: var(--slds-g-spacing-5); margin-top: var(--slds-g-spacing-3); }
+  .sf-field__label { display: block; font-size: var(--slds-g-font-scale-neg-1); color: var(--slds-g-color-on-surface-2); }
+  .sf-field__value { font-size: var(--slds-g-font-scale-1); }
+
+  /* Buttons */
+  .sf-btn { display: inline-flex; align-items: center; justify-content: center; gap: var(--slds-g-spacing-1); height: 2rem; padding: 0 var(--slds-g-spacing-4);
+    border: 1px solid var(--slds-g-color-border-1); border-radius: var(--slds-g-radius-border-2); background: var(--slds-g-color-surface-1);
+    color: var(--slds-g-color-accent-3); cursor: pointer; white-space: nowrap; }
+  .sf-btn:hover { background: var(--slds-g-color-surface-2); }
+  .sf-btn_brand { background: var(--slds-g-color-accent-1); border-color: var(--slds-g-color-accent-1); color: var(--slds-g-color-on-accent-1); }
+  .sf-btn_brand:hover { background: var(--slds-g-color-accent-2); }
+  .sf-btngroup { display: inline-flex; }
+  .sf-btngroup .sf-btn { border-radius: 0; margin-left: -1px; }
+  .sf-btngroup .sf-btn:first-child { border-radius: var(--slds-g-radius-border-2) 0 0 var(--slds-g-radius-border-2); margin-left: 0; }
+  .sf-btngroup .sf-btn:last-child { border-radius: 0 var(--slds-g-radius-border-2) var(--slds-g-radius-border-2) 0; }
+  .sf-iconbtn { width: 2rem; height: 2rem; padding: 0; display: inline-flex; align-items: center; justify-content: center;
+    border: 1px solid var(--slds-g-color-border-1); border-radius: var(--slds-g-radius-border-2); background: var(--slds-g-color-surface-1);
+    color: var(--slds-g-color-on-surface-1); cursor: pointer; }
+  .sf-iconbtn:hover { background: var(--slds-g-color-surface-2); }
+  .sf-iconbtn.xs { width: 1.5rem; height: 1.5rem; }
+
+  /* Tabs */
+  .sf-tabs { padding: 0 var(--slds-g-spacing-4) var(--slds-g-spacing-4); }
+  .sf-tabs__nav { display: flex; gap: var(--slds-g-spacing-5); border-bottom: 1px solid var(--slds-g-color-border-3); margin: 0 0 var(--slds-g-spacing-3); padding: 0; list-style: none; }
+  .sf-tabs__item { border: 0; background: transparent; padding: var(--slds-g-spacing-3) 0; cursor: pointer; font-size: var(--slds-g-font-scale-1);
+    color: var(--slds-g-color-on-surface-2); border-bottom: 3px solid transparent; margin-bottom: -1px; }
+  .sf-tabs__item[aria-selected="true"] { color: var(--slds-g-color-on-surface-3); font-weight: var(--slds-g-font-weight-7); border-bottom-color: var(--slds-g-color-accent-1); }
+
+  /* Related-list card */
+  .sf-rl { margin-bottom: var(--slds-g-spacing-3); }
+  .sf-rl__header { display: flex; align-items: center; gap: var(--slds-g-spacing-3); padding: var(--slds-g-spacing-3) var(--slds-g-spacing-4); }
+  .sf-rl__header h2 { flex: 1; margin: 0; font-size: var(--slds-g-font-scale-1); font-weight: var(--slds-g-font-weight-7); }
+  .sf-rl__footer { text-align: center; padding: var(--slds-g-spacing-2); border-top: 1px solid var(--slds-g-color-border-2); }
+  .sf-details { display: grid; grid-template-columns: 1fr 1fr; gap: var(--slds-g-spacing-3) var(--slds-g-spacing-5); padding: var(--slds-g-spacing-2) 0; }
+  .sf-details div { border-bottom: 1px solid var(--slds-g-color-border-2); padding-bottom: var(--slds-g-spacing-1); }
+
+  /* List view (View All) */
+  .sf-list { display: flex; flex-direction: column; min-height: calc(100vh - 10.5rem); }
+  .sf-list__header { display: flex; align-items: flex-start; gap: var(--slds-g-spacing-3); padding: var(--slds-g-spacing-3) var(--slds-g-spacing-4) var(--slds-g-spacing-2); }
+  .sf-list__titles { flex: 1; min-width: 0; }
+  .sf-breadcrumb { font-size: var(--slds-g-font-scale-neg-1); }
+  .sf-breadcrumb span { color: var(--slds-g-color-on-surface-2); margin: 0 var(--slds-g-spacing-1); }
+  .sf-list__titles h1 { margin: 0; font-size: var(--slds-g-font-scale-3); font-weight: var(--slds-g-font-weight-7); line-height: 1.25; }
+  .sf-list__meta { font-size: var(--slds-g-font-scale-neg-1); color: var(--slds-g-color-on-surface-2); padding: 0 var(--slds-g-spacing-4) var(--slds-g-spacing-2); }
+  .sf-list__actions { display: flex; align-items: center; gap: var(--slds-g-spacing-1); flex-wrap: wrap; justify-content: flex-end; }
+
+  /* Data grid */
+  .sf-gridwrap { position: relative; overflow-x: auto; border-top: 1px solid var(--slds-g-color-border-3); }
+  table.sf-grid { width: 100%; min-width: 46rem; border-collapse: collapse; table-layout: fixed; }
+  .sf-grid th { height: var(--pnm-row-height); background: var(--slds-g-color-surface-2); color: var(--slds-g-color-on-surface-2); text-align: left;
+    font-size: var(--slds-g-font-scale-neg-1); font-weight: var(--slds-g-font-weight-7); border-bottom: 1px solid var(--slds-g-color-border-3);
+    border-right: 1px solid var(--slds-g-color-border-2); padding: 0; }
+  .sf-th { display: flex; align-items: center; height: var(--pnm-row-height); }
+  .sf-sort { flex: 1; min-width: 0; display: flex; align-items: center; gap: var(--slds-g-spacing-1); height: 100%; border: 0; background: transparent;
+    padding: 0 var(--slds-g-spacing-2); font: inherit; color: inherit; text-align: left; cursor: pointer; }
+  .sf-sort:hover { background: var(--slds-g-color-surface-3); }
+  .sf-sort .arrow { visibility: hidden; }
+  th[aria-sort="ascending"] .sf-sort .arrow, th[aria-sort="descending"] .sf-sort .arrow { visibility: visible; }
+  th[aria-sort="descending"] .sf-sort .arrow { transform: rotate(180deg); }
+  .sf-colmenu { width: 1.5rem; height: 100%; border: 0; background: transparent; color: var(--slds-g-color-on-surface-1); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
+  .sf-grid td { height: var(--pnm-row-height); padding: 0 var(--slds-g-spacing-2); border-bottom: 1px solid var(--slds-g-color-border-2);
+    font-size: var(--slds-g-font-scale-neg-1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sf-grid tbody tr:hover td { background: var(--slds-g-color-surface-2); }
+  .sf-grid .num { width: 2.5rem; text-align: right; color: var(--slds-g-color-on-surface-2); padding-right: var(--slds-g-spacing-3); }
+  .sf-grid th.num { padding-right: 0; }
+  .sf-grid .act { width: 2.75rem; text-align: center; border-right: 0; }
+  .sf-grid .bool { width: 5.5rem; }
+  #listTitle:focus { outline: none; }
+  .sf-check { color: var(--slds-g-color-on-surface-2); }
+
+  /* Menus */
+  .sf-menuwrap { position: relative; display: inline-block; }
+  .sf-menu { position: fixed; z-index: 30; min-width: 8rem; margin: 0; padding: var(--slds-g-spacing-1) 0; list-style: none;
+    background: var(--slds-g-color-surface-1); border: 1px solid var(--slds-g-color-border-1); border-radius: var(--slds-g-radius-border-2); box-shadow: var(--slds-g-shadow-2); }
+  .sf-menu button { width: 100%; text-align: left; border: 0; background: transparent; padding: var(--slds-g-spacing-2) var(--slds-g-spacing-3);
+    color: var(--slds-g-color-on-surface-3); cursor: pointer; font-size: var(--slds-g-font-scale-neg-1); }
+  .sf-menu button:hover, .sf-menu button:focus { background: var(--slds-g-color-surface-2); }
+
+  /* Modal */
+  .sf-backdrop { position: fixed; inset: 0; background: rgba(8, 7, 7, 0.6); z-index: 50; display: flex; align-items: flex-start; justify-content: center;
+    padding: 4rem var(--slds-g-spacing-4) var(--slds-g-spacing-4); overflow-y: auto; }
+  .sf-modal { position: relative; width: 100%; max-width: 40rem; }
+  .sf-modal__close { position: absolute; top: -2.5rem; right: 0; width: 2rem; height: 2rem; border: 0; border-radius: var(--slds-g-radius-border-2);
+    background: var(--slds-g-color-surface-1); color: var(--slds-g-color-on-surface-1); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
+  .sf-modal__header { background: var(--slds-g-color-surface-1); padding: var(--slds-g-spacing-4); text-align: center;
+    border-radius: var(--slds-g-radius-border-2) var(--slds-g-radius-border-2) 0 0; border-bottom: 1px solid var(--slds-g-color-border-3); }
+  .sf-modal__header h2 { margin: 0; font-size: var(--slds-g-font-scale-4); font-weight: var(--slds-g-font-weight-4); }
+  .sf-modal__body { background: var(--slds-g-color-surface-1); padding: var(--slds-g-spacing-4) var(--slds-g-spacing-5); }
+  .sf-modal__footer { background: var(--slds-g-color-surface-2); padding: var(--slds-g-spacing-3) var(--slds-g-spacing-4); display: flex; justify-content: flex-end;
+    gap: var(--slds-g-spacing-2); border-top: 1px solid var(--slds-g-color-border-3); border-radius: 0 0 var(--slds-g-radius-border-2) var(--slds-g-radius-border-2); }
+  .sf-section { background: var(--slds-g-color-surface-2); padding: var(--slds-g-spacing-1) var(--slds-g-spacing-3); font-size: var(--slds-g-font-scale-1);
+    margin: 0 0 var(--slds-g-spacing-3); border-radius: var(--slds-g-radius-border-2); font-weight: var(--slds-g-font-weight-4); }
+  .sf-form { display: grid; grid-template-columns: 1fr 1fr; gap: var(--slds-g-spacing-3) var(--slds-g-spacing-5); }
+  .sf-form .full { grid-column: 1 / -1; }
+  .sf-form label { display: block; font-size: var(--slds-g-font-scale-neg-1); color: var(--slds-g-color-on-surface-2); margin-bottom: 0.125rem; }
+  .sf-form abbr { color: var(--slds-g-color-error-1); text-decoration: none; margin-right: 0.125rem; }
+  .sf-input { width: 100%; height: 2rem; padding: 0 var(--slds-g-spacing-3); border: 1px solid var(--slds-g-color-border-1); border-radius: var(--slds-g-radius-border-2);
+    font: inherit; color: var(--slds-g-color-on-surface-3); background: var(--slds-g-color-surface-1); }
+  .sf-input[aria-invalid="true"] { border-color: var(--slds-g-color-error-1); box-shadow: inset 0 0 0 1px var(--slds-g-color-error-1); }
+  .sf-help { font-size: var(--slds-g-font-scale-neg-1); color: var(--slds-g-color-on-surface-2); margin-top: 0.125rem; }
+  .sf-error { font-size: var(--slds-g-font-scale-neg-1); color: var(--slds-g-color-error-1); margin-top: 0.125rem; }
+  .sf-pill { display: flex; align-items: center; gap: var(--slds-g-spacing-2); height: 2rem; padding: 0 var(--slds-g-spacing-2);
+    border: 1px solid var(--slds-g-color-border-1); border-radius: var(--slds-g-radius-border-2); background: var(--slds-g-color-surface-2); }
+  .sf-checkbox { display: flex; align-items: center; gap: var(--slds-g-spacing-2); height: 2rem; }
+  .sf-checkbox input { width: 1rem; height: 1rem; margin: 0; }
+
+  /* Toast */
+  .sf-toast { position: fixed; top: 4.5rem; left: 50%; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: var(--slds-g-spacing-3);
+    min-width: 22rem; max-width: 90vw; padding: var(--slds-g-spacing-3) var(--slds-g-spacing-4); border-radius: var(--slds-g-radius-border-2);
+    background: var(--slds-g-color-success-1); color: #ffffff; box-shadow: var(--slds-g-shadow-2); font-size: var(--slds-g-font-scale-1); }
+  .sf-toast.info { background: #444444; }
+  .sf-toast button { margin-left: auto; border: 0; background: transparent; color: #ffffff; cursor: pointer; display: inline-flex; }
+
+  /* Review drawer — outside the Salesforce frame */
+  .pnm-drawer { position: fixed; top: 0; right: 0; bottom: 0; width: 28rem; max-width: 100vw; z-index: 70; overflow-y: auto;
+    background: var(--slds-g-color-surface-1); border-left: 1px solid var(--slds-g-color-border-1); box-shadow: var(--slds-g-shadow-2);
+    padding: var(--slds-g-spacing-4); font-size: var(--slds-g-font-scale-neg-1); display: none; }
+  body.review-on .pnm-drawer { display: block; }
+  body.review-on { padding-right: 28rem; }
+  .pnm-drawer h2 { font-size: var(--slds-g-font-scale-2); margin: 0 0 var(--slds-g-spacing-2); }
+  .pnm-drawer h3 { font-size: var(--slds-g-font-scale-1); margin: var(--slds-g-spacing-4) 0 var(--slds-g-spacing-2); }
+  .pnm-drawer table { width: 100%; border-collapse: collapse; }
+  .pnm-drawer th, .pnm-drawer td { text-align: left; vertical-align: top; padding: var(--slds-g-spacing-1) var(--slds-g-spacing-2) var(--slds-g-spacing-1) 0;
+    border-bottom: 1px solid var(--slds-g-color-border-2); }
+  .pnm-drawer ol, .pnm-drawer ul { padding-left: var(--slds-g-spacing-4); margin: 0; }
+  .pnm-drawer li { margin-bottom: var(--slds-g-spacing-2); }
+  .pnm-drawer code { font-size: var(--slds-g-font-scale-neg-1); overflow-wrap: anywhere; }
+  .pnm-drawer td:first-child { width: 30%; }
+  .pnm-drawer .pnm-inventory td:nth-child(2) { width: 22%; }
+
+  [hidden] { display: none !important; }
+  @media (max-width: 64rem) {
+    body.review-on { padding-right: 0; }
+    .sf-worktab { width: 8rem; }
+    .sf-subtab { width: 9rem; }
+    .sf-details, .sf-form { grid-template-columns: 1fr; }
   }
-.slds-grid { display: flex; flex-wrap: nowrap; }
-.slds-wrap { flex-wrap: wrap; }
-.slds-grid_vertical { display: flex; flex-direction: column; }
-.slds-col { flex: 1 1 auto; min-width: 0; }
-.slds-gutters > .slds-col { padding-left: var(--slds-g-spacing-3); padding-right: var(--slds-g-spacing-3); }
-.slds-grid_align-spread { justify-content: space-between; }
-.slds-grid_align-end { justify-content: flex-end; }
-.slds-grid_vertical-align-center { align-items: center; }
-.slds-size_1-of-1 { width: 100%; }
-.slds-size_1-of-2 { width: 50%; }
-.slds-size_1-of-3 { width: 33.333%; }
-.slds-size_2-of-3 { width: 66.666%; }
-.slds-size_1-of-4 { width: 25%; }
-.slds-m-bottom_small { margin-bottom: var(--slds-g-spacing-3); }
-.slds-m-bottom_medium { margin-bottom: var(--slds-g-spacing-4); }
-.slds-m-top_medium { margin-top: var(--slds-g-spacing-4); }
-.slds-m-right_x-small { margin-right: var(--slds-g-spacing-2); }
-.slds-m-left_small { margin-left: var(--slds-g-spacing-3); }
-.slds-p-around_small { padding: var(--slds-g-spacing-3); }
-.slds-p-around_medium { padding: var(--slds-g-spacing-4); }
-.slds-p-horizontal_medium { padding-left: var(--slds-g-spacing-4); padding-right: var(--slds-g-spacing-4); }
-.slds-text-heading_small { font-size: var(--slds-g-font-scale-2); font-weight: var(--slds-g-font-weight-5); color: var(--slds-g-color-on-surface-3); }
-.slds-text-heading_medium { font-size: var(--slds-g-font-scale-4); font-weight: var(--slds-g-font-weight-5); color: var(--slds-g-color-on-surface-3); }
-.slds-text-body_small { font-size: var(--slds-g-font-scale-neg-1); color: var(--slds-g-color-on-surface-1); }
-.slds-text-title { font-size: var(--slds-g-font-scale-neg-1); text-transform: uppercase; letter-spacing: 0.04em; color: var(--slds-g-color-on-surface-1); font-weight: var(--slds-g-font-weight-7); }
-.slds-text-color_weak { color: var(--slds-g-color-on-surface-1); }
-.slds-truncate { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.slds-assistive-text { position: absolute !important; margin: -1px !important; border: 0 !important; padding: 0 !important; width: 1px !important; height: 1px !important; overflow: hidden !important; clip: rect(0 0 0 0) !important; }
-.slds-hide { display: none !important; }
-.slds-global-header { background: var(--slds-g-color-on-surface-3); color: var(--slds-g-color-on-accent-1);
-  padding: var(--slds-g-spacing-2) var(--slds-g-spacing-4); display: flex; justify-content: space-between; align-items: center; }
-.slds-button { display: inline-flex; align-items: center; justify-content: center; gap: var(--slds-g-spacing-1);
-  border: 1px solid transparent; border-radius: var(--slds-g-radius-border-2); padding: 0 var(--slds-g-spacing-3);
-  min-height: 2rem; font-family: inherit; font-size: var(--slds-g-font-scale-1); font-weight: var(--slds-g-font-weight-5);
-  cursor: pointer; transition: background var(--slds-g-duration-1); }
-.slds-button_brand { background: var(--slds-g-color-accent-1); color: var(--slds-g-color-on-accent-1); }
-.slds-button_brand:hover { background: var(--slds-g-color-accent-2); }
-.slds-button_neutral { background: var(--slds-g-color-surface-1); color: var(--slds-g-color-accent-1); border-color: var(--slds-g-color-border-2); }
-.slds-button_destructive { background: var(--slds-g-color-error-1); color: var(--slds-g-color-on-error-1); }
-.slds-card { background: var(--slds-g-color-surface-container-1); border: 1px solid var(--slds-g-color-border-1);
-  border-radius: var(--slds-g-radius-border-2); box-shadow: var(--slds-g-shadow-1); margin-bottom: var(--slds-g-spacing-4); position: relative; }
-.slds-card__header { padding: var(--slds-g-spacing-3) var(--slds-g-spacing-4); display: flex; align-items: center; justify-content: space-between; }
-.slds-card__body { padding: 0 var(--slds-g-spacing-4) var(--slds-g-spacing-4); }
-.slds-card__footer { padding: var(--slds-g-spacing-3) var(--slds-g-spacing-4); border-top: 1px solid var(--slds-g-color-border-1); text-align: center; }
-.slds-page-header { background: var(--slds-g-color-surface-1); padding: var(--slds-g-spacing-4); border-bottom: 1px solid var(--slds-g-color-border-1); }
-.slds-page-header__row { display: flex; align-items: center; justify-content: space-between; gap: var(--slds-g-spacing-4); }
-.slds-path__nav { display: flex; list-style: none; margin: 0; padding: 0; gap: var(--slds-g-spacing-1); }
-.slds-path__item { flex: 1 1 0; text-align: center; padding: var(--slds-g-spacing-2); background: var(--slds-g-color-surface-3);
-  border-radius: var(--slds-g-radius-border-1); font-size: var(--slds-g-font-scale-neg-1); }
-.slds-path__item.slds-is-complete { background: var(--slds-g-color-success-1); color: var(--slds-g-color-on-success-1); }
-.slds-path__item.slds-is-current { background: var(--slds-g-color-accent-1); color: var(--slds-g-color-on-accent-1); font-weight: var(--slds-g-font-weight-5); }
-.slds-tabs_default__nav { display: flex; list-style: none; margin: 0; padding: 0; border-bottom: 1px solid var(--slds-g-color-border-1); }
-.slds-tabs_default__item { margin-right: var(--slds-g-spacing-4); padding: var(--slds-g-spacing-3) 0; color: var(--slds-g-color-on-surface-1); border-bottom: 2px solid transparent; }
-.slds-tabs_default__item.slds-is-active { color: var(--slds-g-color-accent-1); border-bottom-color: var(--slds-g-color-accent-1); font-weight: var(--slds-g-font-weight-5); }
-.slds-table { width: 100%; border-collapse: collapse; background: var(--slds-g-color-surface-1); font-size: var(--slds-g-font-scale-1); }
-.slds-table th, .slds-table td { text-align: left; padding: var(--slds-g-spacing-2) var(--slds-g-spacing-3); border-bottom: 1px solid var(--slds-g-color-border-1); }
-.slds-table thead th { background: var(--slds-g-color-surface-2); color: var(--slds-g-color-on-surface-1); font-weight: var(--slds-g-font-weight-7);
-  text-transform: uppercase; letter-spacing: 0.04em; font-size: var(--slds-g-font-scale-neg-1); }
-.slds-form-element { margin-bottom: var(--slds-g-spacing-3); }
-.slds-form-element__label { display: block; font-size: var(--slds-g-font-scale-neg-1); color: var(--slds-g-color-on-surface-1); margin-bottom: var(--slds-g-spacing-1); }
-.slds-input, .slds-select, .slds-textarea { width: 100%; box-sizing: border-box; padding: var(--slds-g-spacing-2) var(--slds-g-spacing-3);
-  font: inherit; font-size: var(--slds-g-font-scale-1); color: var(--slds-g-color-on-surface-2); background: var(--slds-g-color-surface-1);
-  border: 1px solid var(--slds-g-color-border-2); border-radius: var(--slds-g-radius-border-2); }
-.slds-input:focus, .slds-select:focus { outline: 2px solid var(--slds-g-color-accent-1); outline-offset: 1px; }
-.slds-notify_alert { padding: var(--slds-g-spacing-3) var(--slds-g-spacing-4); border-radius: var(--slds-g-radius-border-2); font-size: var(--slds-g-font-scale-1); margin-bottom: var(--slds-g-spacing-3); }
-.slds-theme_success { background: var(--slds-g-color-success-1); color: var(--slds-g-color-on-success-1); }
-.slds-theme_warning { background: var(--slds-g-color-warning-1); color: var(--slds-g-color-on-warning-1); }
-.slds-theme_error { background: var(--slds-g-color-error-1); color: var(--slds-g-color-on-error-1); }
-.slds-progress_vertical { list-style: none; margin: 0; padding: 0; }
-.slds-progress__item { padding: var(--slds-g-spacing-2) var(--slds-g-spacing-3); border-left: 3px solid var(--slds-g-color-border-1); color: var(--slds-g-color-on-surface-1); }
-.slds-progress__item.slds-is-completed { border-left-color: var(--slds-g-color-success-1); color: var(--slds-g-color-on-surface-2); }
-.slds-progress__item.slds-is-active { border-left-color: var(--slds-g-color-accent-1); color: var(--slds-g-color-accent-1); font-weight: var(--slds-g-font-weight-5); }
-.slds-badge { display: inline-block; padding: 0 var(--slds-g-spacing-2); border-radius: var(--slds-g-radius-border-3);
-  background: var(--slds-g-color-surface-3); color: var(--slds-g-color-on-surface-2); font-size: var(--slds-g-font-scale-neg-1); }
-.slds-modal { position: fixed; inset: 4rem 0 0 0; z-index: 9002; display: flex; justify-content: center; }
-.slds-modal__container { background: var(--slds-g-color-surface-1); border-radius: var(--slds-g-radius-border-3); box-shadow: var(--slds-g-shadow-2);
-  width: min(45rem, calc(100vw - 4rem)); max-height: calc(100vh - 8rem); display: flex; flex-direction: column; overflow: hidden; }
-.slds-backdrop { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5); z-index: 9001; }
-.pnm-badge { display: inline-flex; align-items: center; margin-left: var(--slds-g-spacing-2); padding: 0 var(--slds-g-spacing-1);
-  font-size: var(--slds-g-font-scale-neg-2); font-weight: var(--slds-g-font-weight-7); letter-spacing: 0.04em; text-transform: uppercase;
-  border: 1px solid currentColor; border-radius: var(--slds-g-radius-border-1); background: var(--slds-g-color-surface-1); vertical-align: middle; }
-.pnm-badge.ootb       { color: var(--pnm-tone-ootb); }
-.pnm-badge.config     { color: var(--pnm-tone-config); }
-.pnm-badge.flow       { color: var(--pnm-tone-flow); }
-.pnm-badge.os         { color: var(--pnm-tone-os); }
-.pnm-badge.fc         { color: var(--pnm-tone-fc); }
-.pnm-badge.ip         { color: var(--pnm-tone-ip); }
-.pnm-badge.dm         { color: var(--pnm-tone-dm); }
-.pnm-badge.lwc        { color: var(--pnm-tone-lwc); }
-.pnm-badge.apex       { color: var(--pnm-tone-apex); }
-.pnm-badge.dpe        { color: var(--pnm-tone-dpe); }
-.pnm-badge.agentforce { color: var(--pnm-tone-agentforce); }
-.pnm-badge.ext        { color: var(--pnm-tone-ext); }
-.pnm-prov { margin-left: var(--slds-g-spacing-1); font-size: var(--slds-g-font-scale-neg-2); color: var(--slds-g-color-on-surface-1); font-style: italic; }
-.pnm-build-banner { background: var(--slds-g-color-accent-container-1); color: var(--slds-g-color-on-accent-1);
-  padding: var(--slds-g-spacing-3) var(--slds-g-spacing-5); font-size: var(--slds-g-font-scale-1); }
-.pnm-build-banner strong { font-weight: var(--slds-g-font-weight-7); }
-.pnm-legend { display: flex; flex-wrap: wrap; gap: var(--slds-g-spacing-2); align-items: center; background: var(--slds-g-color-surface-1);
-  padding: var(--slds-g-spacing-2) var(--slds-g-spacing-5); border-bottom: 1px solid var(--slds-g-color-border-1); font-size: var(--slds-g-font-scale-neg-1); }
-.pnm-legend .pnm-badge { margin-left: 0; }
-.slds-button_brand .pnm-prov { color: var(--slds-g-color-on-accent-1); }
+  @media (max-width: 45rem) {
+    .sf-appname, .sf-worktabs, .sf-more { display: none; }
+    .sf-utilities .sf-utility.optional { display: none; }
+    .sf-list__header { flex-wrap: wrap; }
+  }
 </style>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <symbol id="icon-provider" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="currentColor"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7" fill="currentColor"/></symbol>
-  <symbol id="icon-network" viewBox="0 0 24 24"><circle cx="5" cy="12" r="3" fill="currentColor"/><circle cx="19" cy="5" r="3" fill="currentColor"/><circle cx="19" cy="19" r="3" fill="currentColor"/><path d="M7.5 11l9-5M7.5 13l9 5" stroke="currentColor" stroke-width="2"/></symbol>
-  <symbol id="icon-sync" viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 14-5l2-2v6h-6l2-2a5 5 0 0 0-9 3z M20 12a8 8 0 0 1-14 5l-2 2v-6h6l-2 2a5 5 0 0 0 9-3z" fill="currentColor"/></symbol>
-  <symbol id="icon-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="currentColor"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6" fill="currentColor"/></symbol>
+  <symbol id="icon-location" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></symbol>
+  <symbol id="icon-network" viewBox="0 0 24 24"><circle cx="5" cy="12" r="3"/><circle cx="19" cy="5" r="3"/><circle cx="19" cy="19" r="3"/><path d="M7.5 11l9-5M7.5 13l9 5" stroke="currentColor" stroke-width="2" fill="none"/></symbol>
+  <symbol id="icon-search" viewBox="0 0 24 24"><circle cx="10" cy="10" r="6" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15 15l6 6" stroke="currentColor" stroke-width="2"/></symbol>
+  <symbol id="icon-down" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.5"/></symbol>
+  <symbol id="icon-up" viewBox="0 0 24 24"><path d="M6 15l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2.5"/></symbol>
+  <symbol id="icon-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.5"/></symbol>
+  <symbol id="icon-check" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="currentColor" stroke-width="2.5"/></symbol>
+  <symbol id="icon-apps" viewBox="0 0 24 24"><g><circle cx="5" cy="5" r="2"/><circle cx="12" cy="5" r="2"/><circle cx="19" cy="5" r="2"/><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="12" cy="19" r="2"/><circle cx="19" cy="19" r="2"/></g></symbol>
+  <symbol id="icon-star" viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+  <symbol id="icon-add" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.5"/></symbol>
+  <symbol id="icon-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .8-1 1.5V14M12 17h.01" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+  <symbol id="icon-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1" stroke="currentColor" stroke-width="2"/></symbol>
+  <symbol id="icon-bell" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 20a2 2 0 0 0 4 0" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+  <symbol id="icon-refresh" viewBox="0 0 24 24"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+  <symbol id="icon-sort" viewBox="0 0 24 24"><path d="M8 4v16M4 16l4 4 4-4M16 20V4M12 8l4-4 4 4" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+  <symbol id="icon-filter" viewBox="0 0 24 24"><path d="M3 5h18l-7 8v6l-4 2v-8z" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
 </svg>
 
-<div class="pnm-build-banner">
-  <strong>Build technology · Mixed</strong> — OOTB practitioner record page + Config directory-display field + LWC participation grid and stepper + Apex participation service.
-  Rejected: record-by-record Flow for multi-network saves (several base and child rows per save — volume rule). Example data is fictitious; icons are simplified placeholders.
+<div class="pnm-build-banner" role="region" aria-label="Prototype information">
+  <strong>Prototype · fictitious data</strong>
+  <span><strong>Build technology · OOTB + Config</strong></span>
+  <span class="pnm-detail">— shipped record page, highlights panel, related list, View All and New modal; the Network Participation tab and the related-list columns are page configuration. No custom code.
+    Rejected: custom participation grid, wizard stepper and bulk-save service (the standard related list and New action cover the verified need). Icons are simplified placeholders.</span>
+  <button type="button" class="pnm-toggle" id="reviewToggle" aria-pressed="false" aria-controls="reviewDrawer">Show review annotations</button>
 </div>
 <div class="pnm-legend" aria-label="Component legend">
   <span class="pnm-badge ootb">OOTB</span> shipped
   <span class="pnm-badge config">Config</span> configuration
-  <span class="pnm-badge lwc">LWC</span> custom component
-  <span class="pnm-badge apex">Apex</span> custom service
+  <span class="pnm-badge flow">Flow</span> declarative automation
   <span class="pnm-badge ext">Ext</span> downstream consumer
-  <span class="pnm-prov">[Proposed]</span> new in this design
+  <span class="pnm-prov">[Proposed]</span> only if a clarification confirms the gap
 </div>
 
-<div class="slds-global-header">
-  <span>Provider Network Management <span class="pnm-badge ootb">OOTB</span></span>
-  <span><svg width="16" height="16" aria-hidden="true"><use href="#icon-user"/></svg><span class="slds-assistive-text">Running persona:</span> Network Configuration Specialist</span>
-</div>
-
-<header class="slds-page-header">
-  <div class="slds-page-header__row">
-    <div>
-      <p class="slds-text-title"><svg width="14" height="14" aria-hidden="true"><use href="#icon-provider"/></svg><span class="slds-assistive-text">Practitioner</span> Practitioner <span class="pnm-badge ootb">OOTB</span></p>
-      <h1 class="slds-text-heading_medium">Dr. Jordan Example, MD</h1>
-      <p class="slds-text-body_small">NPI 1234567893 · Family Medicine · Main St Clinic · <span class="slds-badge">{status per D-5}</span></p>
-    </div>
-    <div><button class="slds-button slds-button_neutral">Cancel <span class="pnm-badge lwc">LWC</span><span class="pnm-prov">[Proposed]</span></button></div>
+<header class="sf-header" data-region="shell">
+  <svg class="sf-logo" viewBox="0 0 52 36" role="img" aria-label="Salesforce"><path fill="#00a1e0" d="M21.6 4.3a9 9 0 0 1 6.5-2.8 9.1 9.1 0 0 1 7.9 4.6 10.9 10.9 0 0 1 4.5-1A11 11 0 0 1 51.5 16 11 11 0 0 1 40.5 27a11 11 0 0 1-2.2-.2 8 8 0 0 1-7 4.1 8.1 8.1 0 0 1-3.5-.8 9.1 9.1 0 0 1-17-.6 8.5 8.5 0 0 1-1.8.2A8.6 8.6 0 0 1 .5 21a8.7 8.7 0 0 1 4.3-7.5 9.9 9.9 0 0 1-.8-3.9A9.9 9.9 0 0 1 21.6 4.3z"/></svg>
+  <div class="sf-search">
+    <label><svg class="icon" aria-hidden="true"><use href="#icon-search"/></svg><span class="slds-assistive-text">Search</span><input type="search" placeholder="Search..." /></label>
   </div>
+  <div class="sf-utilities">
+    <button type="button" class="sf-utility optional" aria-label="Favorites"><svg class="icon" aria-hidden="true"><use href="#icon-star"/></svg></button>
+    <button type="button" class="sf-utility optional" aria-label="Global actions"><svg class="icon" aria-hidden="true"><use href="#icon-add"/></svg></button>
+    <button type="button" class="sf-utility optional" aria-label="Help"><svg class="icon" aria-hidden="true"><use href="#icon-help"/></svg></button>
+    <button type="button" class="sf-utility optional" aria-label="Setup"><svg class="icon" aria-hidden="true"><use href="#icon-gear"/></svg></button>
+    <button type="button" class="sf-utility" aria-label="Notifications"><svg class="icon" aria-hidden="true"><use href="#icon-bell"/></svg></button>
+    <span class="sf-avatar" role="img" aria-label="Signed in as a Network Configuration Specialist">NC</span>
+  </div>
+  <span class="pnm-badge ootb pnm-annot">OOTB · Lightning shell</span>
 </header>
 
-<div class="slds-grid slds-p-around_medium">
-  <div class="slds-col slds-size_1-of-4">
-    <ol class="slds-progress slds-progress_vertical" aria-label="Participation steps">
-      <li class="slds-progress__item slds-is-completed">Practitioner and location</li>
-      <li class="slds-progress__item slds-is-active">Base and child networks</li>
-      <li class="slds-progress__item">Tier and panel</li>
-      <li class="slds-progress__item">Directory display</li>
-      <li class="slds-progress__item">Review and save</li>
-    </ol>
-    <span class="pnm-badge lwc">LWC · stepper</span><span class="pnm-prov">[Proposed]</span>
+<nav class="sf-nav" aria-label="App navigation" data-region="nav">
+  <div class="sf-launcher">
+    <button type="button" aria-label="App Launcher"><svg class="icon" style="width:1.25rem;height:1.25rem" aria-hidden="true"><use href="#icon-apps"/></svg></button>
+    <span class="sf-appname">Provider Network Management</span>
+    <span class="pnm-badge ootb pnm-annot">OOTB · console app</span>
   </div>
+  <div class="sf-worktabs" role="tablist" aria-label="Workspace tabs">
+    <div class="sf-worktab is-active" role="tab" aria-selected="true">
+      <span class="sf-objicon sm facility" aria-hidden="true"><svg class="icon"><use href="#icon-location"/></svg></span>
+      <span class="label slds-truncate">Main St Clinic</span>
+      <button type="button" class="sf-tabctl" aria-label="Actions for Main St Clinic"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-down"/></svg></button>
+      <button type="button" class="sf-tabctl" aria-label="Close Main St Clinic"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-close"/></svg></button>
+    </div>
+    <div class="sf-worktab" role="tab" aria-selected="false">
+      <span class="sf-objicon sm network" aria-hidden="true"><svg class="icon"><use href="#icon-network"/></svg></span>
+      <span class="label slds-truncate">Commercial PPO</span>
+      <button type="button" class="sf-tabctl" aria-label="Actions for Commercial PPO"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-down"/></svg></button>
+      <button type="button" class="sf-tabctl" aria-label="Close Commercial PPO"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-close"/></svg></button>
+    </div>
+  </div>
+  <button type="button" class="sf-more">More <svg class="icon icon-sm" aria-hidden="true"><use href="#icon-down"/></svg></button>
+</nav>
 
-  <div class="slds-col slds-p-horizontal_medium">
-    <div class="slds-notify slds-notify_alert slds-theme_warning" role="alert">Warning: the practitioner's time at Main St Clinic ends 31 Dec 2027, so participation will end with the location. You can save (warns).</div>
+<div class="sf-subtabs" role="tablist" aria-label="Subtabs" data-region="subtabs">
+  <div class="sf-subtab is-active" id="subtabRecordWrap">
+    <button type="button" class="sf-subtab__label" role="tab" aria-selected="true" id="subtabRecord">
+      <span class="sf-objicon sm facility" aria-hidden="true"><svg class="icon"><use href="#icon-location"/></svg></span>
+      <span class="label slds-truncate">Main St Clinic</span>
+    </button>
+  </div>
+  <div class="sf-subtab" id="subtabListWrap" hidden>
+    <button type="button" class="sf-subtab__label" role="tab" aria-selected="false" id="subtabList">
+      <span class="sf-objicon sm network" aria-hidden="true"><svg class="icon"><use href="#icon-network"/></svg></span>
+      <span class="label slds-truncate">Healthcare Facility Networks</span>
+    </button>
+    <button type="button" class="sf-tabctl" aria-label="Close Healthcare Facility Networks" id="closeListTab"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-close"/></svg></button>
+  </div>
+</div>
 
-    <article class="slds-card">
-      <div class="slds-card__header">
-        <h2 class="slds-text-heading_small"><svg width="16" height="16" aria-hidden="true"><use href="#icon-network"/></svg><span class="slds-assistive-text">Networks</span> Network participation <span class="pnm-badge lwc">LWC · grid</span><span class="pnm-prov">[Proposed]</span></h2>
-        <button class="slds-button slds-button_neutral">Add network <span class="pnm-badge lwc">LWC</span><span class="pnm-prov">[Proposed]</span></button>
+<main class="sf-workspace">
+
+  <!-- Screen 1 · Healthcare Facility record page -->
+  <section id="screenRecord" aria-label="Healthcare Facility record">
+    <div class="sf-card sf-highlights" data-region="highlights">
+      <div class="sf-highlights__top">
+        <span class="sf-objicon facility" aria-hidden="true"><svg class="icon"><use href="#icon-location"/></svg></span>
+        <div class="sf-highlights__title">
+          <div class="sf-highlights__obj">Healthcare Facility <span class="pnm-badge ootb pnm-annot">OOTB · highlights panel</span></div>
+          <h1 class="slds-truncate">Main St Clinic</h1>
+        </div>
+        <div class="sf-btngroup">
+          <button type="button" class="sf-btn" data-toast="Edit opens the standard record edit form. Not part of this prototype.">Edit</button>
+          <button type="button" class="sf-btn" aria-label="More actions" data-toast="More actions are not part of this prototype."><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-down"/></svg></button>
+        </div>
       </div>
-      <div class="slds-card__body">
-        <table class="slds-table" aria-label="Network participation rows">
-          <thead><tr><th>Network</th><th>Parent network</th><th>Tier</th><th>Location</th><th>Effective from</th><th>Effective to</th><th>Status</th></tr></thead>
-          <tbody>
-            <tr><td>Commercial PPO</td><td>—</td><td>Tier 1</td><td>Main St Clinic</td><td>01 Dec 2026</td><td>31 Dec 2027</td><td>{status per D-5}</td></tr>
-            <tr><td>Narrow PPO</td><td>Commercial PPO</td><td>—</td><td>Main St Clinic</td><td>01 Dec 2026</td><td>31 Dec 2027</td><td>{status per D-5}</td></tr>
-            <tr><td>Exclusive PPO</td><td>Commercial PPO</td><td>—</td><td>Main St Clinic</td><td>01 Dec 2026</td><td>31 Dec 2027</td><td>{status per D-5}</td></tr>
-          </tbody>
-        </table>
-        <p class="slds-text-body_small slds-m-top_medium">Child-network rows inherit the location and dates of their base network. Rows are written to the product participation object <span class="pnm-badge ootb">OOTB</span>.</p>
+      <div class="sf-highlights__fields">
+        <div><span class="sf-field__label">Account</span><span class="sf-field__value"><a href="#" data-toast="Opens the account record.">Example Health Group</a></span></div>
+        <div><span class="sf-field__label">Location Type</span><span class="sf-field__value">Facility</span></div>
+        <div><span class="sf-field__label">Parent Healthcare Facility</span><span class="sf-field__value">—</span></div>
       </div>
-    </article>
+    </div>
 
-    <article class="slds-card">
-      <div class="slds-card__header"><h2 class="slds-text-heading_small">Directory display <span class="pnm-badge config">Config</span><span class="pnm-prov">[Proposed]</span></h2></div>
-      <div class="slds-card__body">
-        <p><span class="slds-badge">Hidden until 01 Dec 2026</span> — participation starts in the future, so the directory shows it from the effective date. <span class="pnm-badge config">Config · field</span><span class="pnm-prov">[Proposed]</span></p>
-        <p class="slds-text-body_small">Rule: shown when this is the practitioner's primary location and participation is in effect today; hidden until the effective date when it starts in the future; otherwise hidden.</p>
+    <div class="sf-card">
+      <div class="sf-tabs">
+        <div class="sf-tabs__nav" role="tablist" aria-label="Record tabs">
+          <button type="button" class="sf-tabs__item" role="tab" id="tabDetails" aria-controls="panelDetails" aria-selected="false">Details</button>
+          <button type="button" class="sf-tabs__item" role="tab" id="tabNetworks" aria-controls="panelNetworks" aria-selected="true">Network Participation</button>
+          <button type="button" class="sf-tabs__item" role="tab" id="tabRelated" aria-controls="panelRelated" aria-selected="false">Related</button>
+          <span class="pnm-badge config pnm-annot" style="align-self:center">Config · tabset</span>
+        </div>
+
+        <div id="panelDetails" role="tabpanel" aria-labelledby="tabDetails" hidden>
+          <div class="sf-details">
+            <div><span class="sf-field__label">Healthcare Facility Name</span><span class="sf-field__value">Main St Clinic</span></div>
+            <div><span class="sf-field__label">Account</span><span class="sf-field__value"><a href="#" data-toast="Opens the account record.">Example Health Group</a></span></div>
+            <div><span class="sf-field__label">Location Type</span><span class="sf-field__value">Facility</span></div>
+            <div><span class="sf-field__label">Parent Healthcare Facility</span><span class="sf-field__value">—</span></div>
+            <div><span class="sf-field__label">Location</span><span class="sf-field__value">100 Main St, Springfield</span></div>
+            <div><span class="sf-field__label">Always Open</span><span class="sf-field__value">No</span></div>
+          </div>
+          <span class="pnm-badge ootb pnm-annot">OOTB · record detail</span>
+        </div>
+
+        <div id="panelNetworks" role="tabpanel" aria-labelledby="tabNetworks" data-region="related-list">
+          <article class="sf-card sf-rl" aria-labelledby="rlTitle">
+            <div class="sf-rl__header">
+              <span class="sf-objicon sm network" aria-hidden="true"><svg class="icon"><use href="#icon-network"/></svg></span>
+              <h2 id="rlTitle">Healthcare Facility Networks (<span id="rlCount">0</span>)
+                <span class="pnm-badge ootb pnm-annot">OOTB · related list</span><span class="pnm-badge config pnm-annot">Config · columns</span></h2>
+              <button type="button" class="sf-btn" data-open-new>New <span class="pnm-badge ootb pnm-annot">OOTB · New action</span></button>
+            </div>
+            <div class="sf-gridwrap">
+              <table class="sf-grid" aria-label="Healthcare Facility Networks">
+                <thead><tr>
+                  <th scope="col" style="width:30%"><div class="sf-th"><span class="sf-sort">Healthcare Facility Network Name</span></div></th>
+                  <th scope="col"><div class="sf-th"><span class="sf-sort">Practitioner</span></div></th>
+                  <th scope="col"><div class="sf-th"><span class="sf-sort">Payer Network</span></div></th>
+                  <th scope="col"><div class="sf-th"><span class="sf-sort">Effective From</span></div></th>
+                  <th scope="col"><div class="sf-th"><span class="sf-sort">Effective To</span></div></th>
+                  <th scope="col" class="bool"><div class="sf-th"><span class="sf-sort">Active</span></div></th>
+                  <th scope="col" class="act"><span class="slds-assistive-text">Actions</span></th>
+                </tr></thead>
+                <tbody id="rlBody"></tbody>
+              </table>
+            </div>
+            <div class="sf-rl__footer"><a href="#" id="viewAll">View All<span class="slds-assistive-text"> Healthcare Facility Networks</span></a></div>
+          </article>
+        </div>
+
+        <div id="panelRelated" role="tabpanel" aria-labelledby="tabRelated" hidden>
+          <article class="sf-card sf-rl">
+            <div class="sf-rl__header">
+              <span class="sf-objicon sm facility" aria-hidden="true"><svg class="icon"><use href="#icon-location"/></svg></span>
+              <h2>Healthcare Practitioner Facilities (3) <span class="pnm-badge ootb pnm-annot">OOTB · related list</span></h2>
+            </div>
+            <div class="sf-rl__footer"><a href="#" data-toast="View All for this list is not part of this prototype.">View All</a></div>
+          </article>
+        </div>
       </div>
-    </article>
+    </div>
+  </section>
 
-    <article class="slds-card">
-      <div class="slds-card__header"><h2 class="slds-text-heading_small"><svg width="16" height="16" aria-hidden="true"><use href="#icon-sync"/></svg><span class="slds-assistive-text">Sync</span> Downstream consumers <span class="pnm-badge ext">Ext</span></h2></div>
-      <div class="slds-card__body">
-        <table class="slds-table" aria-label="Downstream consumers">
-          <thead><tr><th>Consumer</th><th>Receives</th><th>When</th></tr></thead>
-          <tbody>
-            <tr><td>{directory consumer per D-12}</td><td>Network, location, display flag</td><td>After save</td></tr>
-            <tr><td>{claims consumer per D-12}</td><td>Network, tier, effective dates</td><td>{timing per D-12}</td></tr>
-          </tbody>
-        </table>
+  <!-- Screen 2 · View All -->
+  <section id="screenList" class="sf-card sf-list" aria-labelledby="listTitle" hidden data-region="view-all">
+    <div class="sf-list__header">
+      <span class="sf-objicon network" aria-hidden="true"><svg class="icon"><use href="#icon-network"/></svg></span>
+      <div class="sf-list__titles">
+        <nav class="sf-breadcrumb" aria-label="Breadcrumb"><a href="#" data-back>Healthcare Facilities</a><span>&gt;</span><a href="#" data-back>Main St Clinic</a></nav>
+        <h1 id="listTitle">Healthcare Facility Networks <span class="pnm-badge ootb pnm-annot">OOTB · View All</span></h1>
       </div>
-    </article>
+      <div class="sf-list__actions">
+        <button type="button" class="sf-btn" data-open-new>New</button>
+        <button type="button" class="sf-iconbtn" aria-label="List settings" data-toast="List settings are not part of this prototype."><svg class="icon" aria-hidden="true"><use href="#icon-gear"/></svg></button>
+        <button type="button" class="sf-iconbtn" aria-label="Refresh" id="refreshBtn"><svg class="icon" aria-hidden="true"><use href="#icon-refresh"/></svg></button>
+        <button type="button" class="sf-iconbtn" aria-label="Sort by Payer Network" id="sortBtn"><svg class="icon" aria-hidden="true"><use href="#icon-sort"/></svg></button>
+        <button type="button" class="sf-iconbtn" aria-label="Show filters" data-toast="Filters are not part of this prototype."><svg class="icon" aria-hidden="true"><use href="#icon-filter"/></svg></button>
+      </div>
+    </div>
+    <div class="sf-list__meta" id="listMeta" aria-live="polite"></div>
+    <div class="sf-gridwrap">
+      <table class="sf-grid" aria-label="Healthcare Facility Networks, all rows">
+        <thead><tr id="listHead"></tr></thead>
+        <tbody id="listBody"></tbody>
+      </table>
+    </div>
+  </section>
+</main>
 
-    <div class="slds-grid slds-grid_align-end">
-      <button class="slds-button slds-button_neutral slds-m-right_x-small">Back <span class="pnm-badge lwc">LWC</span><span class="pnm-prov">[Proposed]</span></button>
-      <button class="slds-button slds-button_brand">Save participation <span class="pnm-badge apex">Apex · bulk</span><span class="pnm-prov">[Proposed]</span></button>
+<!-- Standard New modal -->
+<div class="sf-backdrop" id="newModal" hidden>
+  <div class="sf-modal" role="dialog" aria-modal="true" aria-labelledby="newTitle">
+    <button type="button" class="sf-modal__close" id="newClose" aria-label="Cancel and close"><svg class="icon" aria-hidden="true"><use href="#icon-close"/></svg></button>
+    <div class="sf-modal__header"><h2 id="newTitle">New Healthcare Facility Network</h2>
+      <span class="pnm-badge ootb pnm-annot">OOTB · standard create</span><span class="pnm-badge config pnm-annot">Config · page layout</span></div>
+    <form class="sf-modal__body" id="newForm" novalidate>
+      <div class="sf-section">Information</div>
+      <div class="sf-form">
+        <div class="full">
+          <label for="fName"><abbr title="required">*</abbr>Healthcare Facility Network Name</label>
+          <input class="sf-input" id="fName" required aria-describedby="fNameErr" />
+          <div class="sf-error" id="fNameErr" hidden>Complete this field.</div>
+        </div>
+        <div>
+          <label for="fFacility">Healthcare Facility</label>
+          <div class="sf-pill" id="fFacility" role="group" aria-label="Healthcare Facility: Main St Clinic">
+            <span class="sf-objicon sm facility" aria-hidden="true"><svg class="icon"><use href="#icon-location"/></svg></span>Main St Clinic</div>
+        </div>
+        <div>
+          <label for="fPract">Practitioner</label>
+          <select class="sf-input" id="fPract"></select>
+        </div>
+        <div>
+          <label for="fNetwork"><abbr title="required">*</abbr>Payer Network</label>
+          <select class="sf-input" id="fNetwork" required aria-describedby="fNetworkHelp fNetworkErr"></select>
+          <div class="sf-help" id="fNetworkHelp"></div>
+          <div class="sf-error" id="fNetworkErr" hidden>Complete this field.</div>
+        </div>
+        <div>
+          <label for="fTier">Provider Network Tier</label>
+          <select class="sf-input" id="fTier"><option value="">--None--</option><option>Tier 1</option><option>Tier 2</option></select>
+        </div>
+        <div>
+          <label for="fPanel">Panel Status</label>
+          <select class="sf-input" id="fPanel"><option value="">--None--</option><option>Open to New Patients</option><option>Open to Existing Patients</option><option>Closed to All Patients</option></select>
+        </div>
+        <div class="sf-checkbox"><input type="checkbox" id="fActive" checked /><label for="fActive" style="margin:0">Active</label></div>
+        <div>
+          <label for="fFrom"><abbr title="required">*</abbr>Effective From</label>
+          <input class="sf-input" id="fFrom" type="date" required aria-describedby="fFromErr" />
+          <div class="sf-error" id="fFromErr" hidden>Complete this field.</div>
+        </div>
+        <div>
+          <label for="fTo">Effective To</label>
+          <input class="sf-input" id="fTo" type="date" aria-describedby="fToErr" />
+          <div class="sf-error" id="fToErr" hidden>Effective To must be on or after Effective From.</div>
+        </div>
+      </div>
+    </form>
+    <div class="sf-modal__footer">
+      <button type="button" class="sf-btn" id="newCancel">Cancel</button>
+      <button type="button" class="sf-btn" id="newSaveNew">Save &amp; New</button>
+      <button type="button" class="sf-btn sf-btn_brand" id="newSave">Save</button>
     </div>
   </div>
 </div>
+
+<div class="sf-toast" id="toast" role="status" aria-live="polite" hidden><span id="toastMsg"></span>
+  <button type="button" id="toastClose" aria-label="Close"><svg class="icon" aria-hidden="true"><use href="#icon-close"/></svg></button></div>
+
+<aside class="pnm-drawer" id="reviewDrawer" aria-label="Review annotations">
+  <h2>Review annotations</h2>
+  <p>Shown only in review mode, so the screen itself looks as a user would see it. Running persona: <strong>Network Configuration Specialist</strong>.</p>
+
+  <h3>Fidelity</h3>
+  <table>
+    <tr><th scope="row">Structure</th><td>Product objects and fields verified against a Health Cloud org describe <span class="pnm-prov">[Product]</span></td></tr>
+    <tr><th scope="row">Visuals</th><td>Console shell, record page, related list and View All modelled on a reference Lightning screen at screenshot level. Fonts, tokens and focus styles are not verified against a live org.</td></tr>
+    <tr><th scope="row">Workflow</th><td>Standard: open the facility, review its networks, View All, New. No custom save.</td></tr>
+  </table>
+
+  <h3>Component inventory</h3>
+  <table class="pnm-inventory">
+    <thead><tr><th>Region</th><th>Build</th><th>Grounding</th></tr></thead>
+    <tbody>
+      <tr><td>Global header, console navigation, subtabs</td><td><span class="pnm-badge ootb">OOTB</span></td><td>Lightning console app</td></tr>
+      <tr><td>Highlights panel</td><td><span class="pnm-badge ootb">OOTB</span></td><td>Record page header</td></tr>
+      <tr><td>Network Participation tab</td><td><span class="pnm-badge config">Config</span></td><td>Lightning App Builder tab on the Healthcare Facility page</td></tr>
+      <tr><td>Healthcare Facility Networks list and View All</td><td><span class="pnm-badge ootb">OOTB</span> <span class="pnm-badge config">Config</span></td><td>Related list on <code>HealthcareFacilityNetwork</code> via <code>HealthcareFacilityId</code>; columns configured <span class="pnm-prov">[Product]</span></td></tr>
+      <tr><td>New modal</td><td><span class="pnm-badge ootb">OOTB</span> <span class="pnm-badge config">Config</span></td><td>Standard create; fields <code>Name</code>, <code>HealthcareFacilityId</code>, <code>PractitionerId</code>, <code>PayerNetworkId</code>, <code>ProviderNetworkTierId</code>, <code>PanelStatus</code>, <code>IsActive</code>, <code>EffectiveFrom</code>, <code>EffectiveTo</code> <span class="pnm-prov">[Product]</span></td></tr>
+      <tr><td>Parent network hint in New</td><td><span class="pnm-badge ootb">OOTB</span></td><td><code>HealthcarePayerNetwork.ParentPayerNetworkId</code> <span class="pnm-prov">[Product]</span></td></tr>
+      <tr><td>Effective To after Effective From</td><td><span class="pnm-badge config">Config</span></td><td>Validation rule <span class="pnm-prov">[Proposed]</span></td></tr>
+    </tbody>
+  </table>
+
+  <h3>Rejected</h3>
+  <ul>
+    <li>Custom participation grid — duplicates the standard related list.</li>
+    <li>Wizard with a vertical stepper — the task is a record-page task, not a multi-step build.</li>
+    <li>Custom bulk-save service — standard New saves one row at a time; no volume evidence yet requires more (see Q1).</li>
+  </ul>
+
+  <h3>Clarification questions</h3>
+  <ol>
+    <li><strong>Q1 · Base and child networks in one step.</strong> Standard New creates one row per network, so a base network with two child networks needs three saves. If D-11 volume shows this is a real burden, propose a screen flow quick action that creates the child rows from <code>ParentPayerNetworkId</code> <span class="pnm-badge flow">Flow · quick action</span><span class="pnm-prov">[Proposed]</span>. Not built here.</li>
+    <li><strong>Q2 · Participation status.</strong> The product carries Active and effective dates. Any further status values are <code>{status per D-5}</code>.</li>
+    <li><strong>Q3 · Directory display.</strong> No product field decides directory visibility. If a rule is required, it is a configured field <span class="pnm-badge config">Config · field</span><span class="pnm-prov">[Proposed]</span> once confirmed.</li>
+    <li><strong>Q4 · Downstream consumers.</strong> <code>{consumers per D-12}</code> <span class="pnm-badge ext">Ext</span> — they receive saved rows; nothing on this screen.</li>
+    <li><strong>Q5 · Location end date.</strong> Should participation be blocked or warned when it outlasts the practitioner's time at the facility? A validation rule <span class="pnm-badge config">Config</span><span class="pnm-prov">[Proposed]</span> if confirmed.</li>
+  </ol>
+
+  <h3>Self-check · 9 / 10</h3>
+  <p>Point 7 (matches the approved scope) is not met: Q1 is unresolved, so the one-step base-and-child add is not shown. All other points pass.</p>
+</aside>
+
+<script>
+(() => {
+  const NETWORKS = [
+    { name: 'Commercial PPO', parent: '' },
+    { name: 'Narrow PPO', parent: 'Commercial PPO' },
+    { name: 'Exclusive PPO', parent: 'Commercial PPO' },
+    { name: 'Medicare Advantage HMO', parent: '' },
+    { name: 'Value HMO', parent: 'Medicare Advantage HMO' }
+  ];
+  const PRACTITIONERS = ['Dr. Jordan Example', 'Dr. Sam Placeholder', 'Dr. Alex Sample'];
+  const rows = [
+    { name: 'Commercial PPO – Jordan Example', pract: 'Dr. Jordan Example', network: 'Commercial PPO', tier: 'Tier 1', panel: 'Open to New Patients', from: '2026-01-01', to: '', active: true },
+    { name: 'Narrow PPO – Jordan Example', pract: 'Dr. Jordan Example', network: 'Narrow PPO', tier: '', panel: 'Open to New Patients', from: '2026-01-01', to: '', active: true },
+    { name: 'Exclusive PPO – Jordan Example', pract: 'Dr. Jordan Example', network: 'Exclusive PPO', tier: '', panel: 'Open to Existing Patients', from: '2026-01-01', to: '2027-12-31', active: true },
+    { name: 'Medicare Advantage HMO – Sam Placeholder', pract: 'Dr. Sam Placeholder', network: 'Medicare Advantage HMO', tier: 'Tier 2', panel: 'Open to New Patients', from: '2025-07-01', to: '', active: true },
+    { name: 'Value HMO – Sam Placeholder', pract: 'Dr. Sam Placeholder', network: 'Value HMO', tier: 'Tier 1', panel: 'Closed to All Patients', from: '2024-03-01', to: '2026-02-28', active: false },
+    { name: 'Commercial PPO – Alex Sample', pract: 'Dr. Alex Sample', network: 'Commercial PPO', tier: 'Tier 2', panel: 'Open to New Patients', from: '2026-12-01', to: '', active: true }
+  ];
+  const LIST_COLS = [
+    { key: 'name', label: 'Healthcare Facility Network Name', link: true, width: '22%' },
+    { key: 'pract', label: 'Practitioner', link: true },
+    { key: 'network', label: 'Payer Network', link: true },
+    { key: 'tier', label: 'Provider Network Tier', link: true },
+    { key: 'panel', label: 'Panel Status' },
+    { key: 'from', label: 'Effective From', date: true },
+    { key: 'to', label: 'Effective To', date: true },
+    { key: 'active', label: 'Active', bool: true }
+  ];
+  const CARD_LIMIT = 5;
+  let sort = { key: 'network', dir: 'ascending' };
+  let updated = Date.now();
+  let lastFocus = null;
+
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const fmt = (iso) => { if (!iso) return ''; const [y, m, d] = iso.split('-'); return `${+m}/${+d}/${y}`; };
+  const cell = (col, r) => {
+    const v = r[col.key];
+    if (col.bool) return v ? '<svg class="icon icon-sm sf-check" role="img" aria-label="True"><use href="#icon-check"/></svg>' : '<span class="slds-assistive-text">False</span>';
+    if (col.date) return esc(fmt(v));
+    if (!v) return '';
+    return col.link ? `<a href="#" data-toast="Opens ${esc(v)}.">${esc(v)}</a>` : esc(v);
+  };
+  const rowMenu = (i, label) => `<td class="act"><div class="sf-menuwrap"><button type="button" class="sf-iconbtn xs" aria-haspopup="menu" aria-expanded="false" data-menu="${i}" aria-label="Show actions for ${esc(label)}"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-down"/></svg></button></div></td>`;
+
+  function sorted() {
+    const k = sort.key, m = sort.dir === 'ascending' ? 1 : -1;
+    return rows.map((r, i) => ({ r, i })).sort((a, b) => String(a.r[k]).localeCompare(String(b.r[k])) * m);
+  }
+
+  function renderCard() {
+    $('rlCount').textContent = rows.length > CARD_LIMIT ? `${CARD_LIMIT}+` : rows.length;
+    $('rlBody').innerHTML = sorted().slice(0, CARD_LIMIT).map(({ r, i }) =>
+      `<tr><td>${cell(LIST_COLS[0], r)}</td><td>${cell(LIST_COLS[1], r)}</td><td>${cell(LIST_COLS[2], r)}</td><td>${cell(LIST_COLS[5], r)}</td><td>${cell(LIST_COLS[6], r)}</td><td class="bool">${cell(LIST_COLS[7], r)}</td>${rowMenu(i, r.name)}</tr>`).join('');
+  }
+
+  function renderList() {
+    $('listHead').innerHTML = '<th scope="col" class="num"><span class="slds-assistive-text">Row number</span></th>' + LIST_COLS.map((c) => {
+      const s = sort.key === c.key ? sort.dir : 'none';
+      return `<th scope="col" aria-sort="${s}" class="${c.bool ? 'bool' : ''}"${c.width ? ` style="width:${c.width}"` : ''}><div class="sf-th">
+        <button type="button" class="sf-sort" data-sort="${c.key}"><span class="slds-truncate">${c.label}</span><svg class="icon icon-sm arrow" aria-hidden="true"><use href="#icon-up"/></svg></button>
+        <button type="button" class="sf-colmenu" aria-label="Show ${c.label} column actions" data-toast="Column actions (wrap text, clip text) are not part of this prototype."><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-down"/></svg></button></div></th>`;
+    }).join('') + '<th scope="col" class="act"><span class="slds-assistive-text">Actions</span></th>';
+    $('listBody').innerHTML = sorted().map(({ r, i }, n) =>
+      `<tr><td class="num">${n + 1}</td>${LIST_COLS.map((c) => `<td class="${c.bool ? 'bool' : ''}">${cell(c, r)}</td>`).join('')}${rowMenu(i, r.name)}</tr>`).join('');
+    const label = LIST_COLS.find((c) => c.key === sort.key).label;
+    const mins = Math.round((Date.now() - updated) / 60000);
+    $('listMeta').textContent = `${rows.length} items • Sorted by ${label} • Updated ${mins < 1 ? 'a few seconds ago' : mins + ' minutes ago'}`;
+  }
+
+  function render() { renderCard(); renderList(); }
+
+  function showScreen(which) {
+    const list = which === 'list';
+    $('screenRecord').hidden = list;
+    $('screenList').hidden = !list;
+    if (list) $('subtabListWrap').hidden = false;
+    $('subtabRecordWrap').classList.toggle('is-active', !list);
+    $('subtabRecord').setAttribute('aria-selected', String(!list));
+    $('subtabListWrap').classList.toggle('is-active', list);
+    $('subtabList').setAttribute('aria-selected', String(list));
+    if (list) { renderList(); $('listTitle').focus({ preventScroll: true }); }
+  }
+
+  function selectTab(id) {
+    ['Details', 'Networks', 'Related'].forEach((n) => {
+      const on = 'tab' + n === id;
+      $('tab' + n).setAttribute('aria-selected', String(on));
+      $('panel' + n).hidden = !on;
+    });
+  }
+
+  let toastTimer;
+  function toast(msg, kind) {
+    $('toastMsg').textContent = msg;
+    $('toast').className = 'sf-toast' + (kind === 'info' ? ' info' : '');
+    $('toast').hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { $('toast').hidden = true; }, 4000);
+  }
+
+  function closeMenus() {
+    document.querySelectorAll('.sf-menu').forEach((m) => m.remove());
+    document.querySelectorAll('[data-menu][aria-expanded="true"]').forEach((b) => b.setAttribute('aria-expanded', 'false'));
+  }
+  function openMenu(btn) {
+    closeMenus();
+    const i = +btn.dataset.menu;
+    const ul = document.createElement('ul');
+    ul.className = 'sf-menu'; ul.setAttribute('role', 'menu');
+    ul.innerHTML = '<li role="none"><button type="button" role="menuitem" data-edit="' + i + '">Edit</button></li><li role="none"><button type="button" role="menuitem" data-delete="' + i + '">Delete</button></li>';
+    const rect = btn.getBoundingClientRect();
+    ul.style.top = `${rect.bottom + 2}px`;
+    ul.style.right = `${document.documentElement.clientWidth - rect.right}px`;
+    document.body.appendChild(ul);
+    btn.setAttribute('aria-expanded', 'true');
+    ul.querySelector('button').focus({ preventScroll: true });
+  }
+
+  // New / Edit modal
+  let editing = null;
+  function fillSelects() {
+    $('fPract').innerHTML = '<option value="">--None--</option>' + PRACTITIONERS.map((p) => `<option>${p}</option>`).join('');
+    $('fNetwork').innerHTML = '<option value="">--None--</option>' + NETWORKS.map((n) => `<option value="${n.name}">${n.name}</option>`).join('');
+  }
+  function networkHint() {
+    const n = NETWORKS.find((x) => x.name === $('fNetwork').value);
+    $('fNetworkHelp').textContent = n && n.parent ? `Child network of ${n.parent}` : (n ? 'Base network' : '');
+  }
+  function resetForm(r) {
+    $('newForm').reset();
+    ['fName', 'fNetwork', 'fFrom', 'fTo'].forEach((id) => { $(id).removeAttribute('aria-invalid'); $(id + 'Err').hidden = true; });
+    if (r) {
+      $('fName').value = r.name; $('fPract').value = r.pract; $('fNetwork').value = r.network; $('fTier').value = r.tier;
+      $('fPanel').value = r.panel; $('fActive').checked = r.active; $('fFrom').value = r.from; $('fTo').value = r.to;
+    }
+    networkHint();
+  }
+  function openModal(index) {
+    lastFocus = document.activeElement;
+    editing = index;
+    $('newTitle').textContent = index == null ? 'New Healthcare Facility Network' : `Edit ${rows[index].name}`;
+    $('newSaveNew').hidden = index != null;
+    resetForm(index == null ? null : rows[index]);
+    $('newModal').hidden = false;
+    $('fName').focus();
+  }
+  function closeModal() {
+    $('newModal').hidden = true;
+    if (lastFocus && document.contains(lastFocus)) lastFocus.focus();
+  }
+  function validate() {
+    let ok = true;
+    const flag = (id, bad) => { $(id).setAttribute('aria-invalid', String(bad)); $(id + 'Err').hidden = !bad; if (bad && ok) { $(id).focus(); ok = false; } };
+    flag('fName', !$('fName').value.trim());
+    flag('fNetwork', !$('fNetwork').value);
+    flag('fFrom', !$('fFrom').value);
+    flag('fTo', !!($('fTo').value && $('fFrom').value && $('fTo').value < $('fFrom').value));
+    return ok;
+  }
+  function save(keepOpen) {
+    if (!validate()) return;
+    const r = { name: $('fName').value.trim(), pract: $('fPract').value, network: $('fNetwork').value, tier: $('fTier').value,
+      panel: $('fPanel').value, from: $('fFrom').value, to: $('fTo').value, active: $('fActive').checked };
+    if (editing == null) rows.push(r); else rows[editing] = r;
+    updated = Date.now();
+    render();
+    toast(`Healthcare Facility Network "${r.name}" was ${editing == null ? 'created' : 'saved'}.`);
+    if (keepOpen) { resetForm(null); $('fName').focus(); } else closeModal();
+  }
+
+  document.addEventListener('click', (e) => {
+    const t = e.target.closest('button, a, [role="button"]');
+    if (!t) { closeMenus(); return; }
+    if (t.matches('a[href="#"]')) e.preventDefault();
+    if (t.id === 'reviewToggle') {
+      const on = document.body.classList.toggle('review-on');
+      t.setAttribute('aria-pressed', String(on));
+      t.textContent = on ? 'Hide review annotations' : 'Show review annotations';
+      return;
+    }
+    if (t.dataset.menu !== undefined) { t.getAttribute('aria-expanded') === 'true' ? closeMenus() : openMenu(t); return; }
+    closeMenus();
+    if (t.dataset.edit !== undefined) { openModal(+t.dataset.edit); return; }
+    if (t.dataset.delete !== undefined) {
+      const [r] = rows.splice(+t.dataset.delete, 1); updated = Date.now(); render();
+      toast(`Healthcare Facility Network "${r.name}" was deleted.`); return;
+    }
+    if (t.dataset.sort) {
+      sort = { key: t.dataset.sort, dir: sort.key === t.dataset.sort && sort.dir === 'ascending' ? 'descending' : 'ascending' };
+      render(); document.querySelector(`[data-sort="${sort.key}"]`).focus(); return;
+    }
+    if (t.hasAttribute('data-open-new')) { openModal(null); return; }
+    if (t.hasAttribute('data-back') || t.id === 'subtabRecord') { showScreen('record'); return; }
+    if (t.id === 'closeListTab') { $('subtabListWrap').hidden = true; showScreen('record'); $('subtabRecord').focus(); return; }
+    if (t.id === 'subtabList' || t.id === 'viewAll') { showScreen('list'); return; }
+    if (t.id === 'refreshBtn') { updated = Date.now(); renderList(); toast('List refreshed.', 'info'); return; }
+    if (t.id === 'sortBtn') { sort = { key: 'network', dir: 'ascending' }; render(); return; }
+    if (t.id === 'newSave') { save(false); return; }
+    if (t.id === 'newSaveNew') { save(true); return; }
+    if (t.id === 'newCancel' || t.id === 'newClose') { closeModal(); return; }
+    if (t.id === 'toastClose') { $('toast').hidden = true; return; }
+    if (['tabDetails', 'tabNetworks', 'tabRelated'].includes(t.id)) { selectTab(t.id); return; }
+    if (t.dataset.toast) toast(t.dataset.toast, 'info');
+  });
+
+  window.addEventListener('resize', closeMenus);
+  document.addEventListener('wheel', closeMenus, { passive: true });
+  document.addEventListener('touchmove', closeMenus, { passive: true });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      if (!$('newModal').hidden) closeModal();
+      else if (document.querySelector('.sf-menu')) { const b = document.querySelector('[data-menu][aria-expanded="true"]'); closeMenus(); if (b) b.focus(); }
+    }
+    if (e.key === 'Tab' && !$('newModal').hidden) {
+      const f = [...$('newModal').querySelectorAll('button:not([hidden]), input, select')].filter((x) => x.offsetParent !== null);
+      const first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
+  });
+  $('fNetwork').addEventListener('change', networkHint);
+  $('listTitle').tabIndex = -1;
+
+  fillSelects();
+  render();
+})();
+</script>
 </body>
 </html>

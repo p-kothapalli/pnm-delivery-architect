@@ -1004,7 +1004,7 @@
       <div class="prompt-box"><span class="lbl">You</span>Plan and prototype a network participation screen for adding a practitioner at one practice location to base networks and their child networks — no stories yet.</div>
       <div class="prompt-box"><span class="lbl">Agent</span>Mode: Plan + Prototype — no stories or acceptance criteria will be written.
 Running Org Discovery (full). Resolved: D-1 provider anchor, D-3 location model, D-4 participation grain, D-5 status and dates, D-8 prefix, D-10 PNM add-on, D-11 volume.
-Not resolved: D-12 downstream consumers → raised as Clarification Q1.
+Not resolved: D-12 downstream consumers → raised as Clarification Q4.
 Scenarios selected: NW-01, NW-02, NW-08.
 Phase 1 · Context and Phase 2 · Business questions follow.</div>
       <p class="footnote">Illustrative transcript showing the contract's order of operations. The evaluations in the repository define the expected behaviour for this case.</p>
@@ -1013,13 +1013,13 @@ Phase 1 · Context and Phase 2 · Business questions follow.</div>
     <div class="ex-block">
       <span class="real-note">Real file</span>
       <div class="ex-kicker">Step 2 — Grounded prototype</div>
-      <h2 class="ex-title">Clickable, SLDS 2-styled, and honest about cost</h2>
-      <p class="ex-desc">Built from the primer's blueprints for the wizard stepper, the provider record header and the participation grid. A banner states the build technology and what was rejected; a legend lists every badge used; every control is badged, and every custom element carries its provenance.</p>
+      <h2 class="ex-title">Looks like the org, and honest about cost</h2>
+      <p class="ex-desc">A Lightning console screen: the Healthcare Facility record page, its Network Participation tab, the standard related list, View All and the standard New modal, all on shipped components plus page configuration. A slim banner states the build technology. Turn on review annotations to see the legend, a badge on every region, the rejected custom options and the open questions.</p>
       <div class="result-summary">
         <h4>Network participation — PNM Prototype</h4>
         <p class="rs-label">In this repository</p>
         <code class="path">examples/network-participation-prototype.html</code>
-        <p><strong>Grounding:</strong> participation rows on the product object <code>[Product]</code>; grid, stepper and bulk save service <code>[Proposed]</code>; status values left as <code>{status per D-5}</code> until discovered; downstream consumers as <code>{… per D-12}</code>. Self-check 10 / 10; passes the package validator.</p>
+        <p><strong>Grounding:</strong> participation rows on the product object <code>HealthcareFacilityNetwork</code> <code>[Product]</code>; custom grid, stepper and bulk-save service rejected; date validation and the base-plus-child network action <code>[Proposed]</code>; status values left as <code>{status per D-5}</code> until discovered; downstream consumers as <code>{… per D-12}</code>. Self-check 9 / 10, with the open point raised as a clarification; passes the package validator and the SLDS linter.</p>
       </div>
       <p style="margin-top:18px">
         <a class="tab-nav-btn next" style="text-decoration:none;display:inline-block" href="examples/network-participation-prototype.html">Open the prototype →</a>
